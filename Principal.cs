@@ -696,17 +696,6 @@ namespace Baiana20
                 throw;
             }
         }
-
-        private void btPararProcesso_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                throw new Exception();
-            }
-            catch (Exception)
-            {
-                MensagemProcesso("Processo abortado pelo usuário!!!");
-            }
-        }
+        
     }
 }

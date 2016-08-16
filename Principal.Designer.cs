@@ -49,7 +49,6 @@ namespace Baiana20
             this.CbFecharTerminar = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.boxLog = new System.Windows.Forms.TextBox();
-            this.btPararProcesso = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // BtnCompilar
@@ -251,16 +250,6 @@ namespace Baiana20
             this.boxLog.Size = new System.Drawing.Size(694, 130);
             this.boxLog.TabIndex = 27;
             // 
-            // btPararProcesso
-            // 
-            this.btPararProcesso.Location = new System.Drawing.Point(531, 12);
-            this.btPararProcesso.Name = "btPararProcesso";
-            this.btPararProcesso.Size = new System.Drawing.Size(175, 22);
-            this.btPararProcesso.TabIndex = 28;
-            this.btPararProcesso.Text = "Parar Processo";
-            this.btPararProcesso.UseVisualStyleBackColor = true;
-            this.btPararProcesso.Click += new System.EventHandler(this.btPararProcesso_Click);
-            // 
             // Baiana20
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -269,7 +258,6 @@ namespace Baiana20
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(717, 509);
-            this.Controls.Add(this.btPararProcesso);
             this.Controls.Add(this.boxLog);
             this.Controls.Add(this.PbProgresso);
             this.Controls.Add(this.CbFecharTerminar);
@@ -319,7 +307,6 @@ namespace Baiana20
         public System.Windows.Forms.CheckBox CbFecharTerminar;
         private System.Windows.Forms.Label label3;
         private TextBox boxLog;
-        private Button btPararProcesso;
     }
 }
 
