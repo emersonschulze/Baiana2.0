@@ -49,6 +49,7 @@ namespace Baiana20
             this.CbFecharTerminar = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.boxLog = new System.Windows.Forms.TextBox();
+            this.btPararProcesso = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // BtnCompilar
@@ -166,7 +167,7 @@ namespace Baiana20
             // 
             // BtnCopiaDLLS
             // 
-            this.BtnCopiaDLLS.Location = new System.Drawing.Point(531, 67);
+            this.BtnCopiaDLLS.Location = new System.Drawing.Point(531, 65);
             this.BtnCopiaDLLS.Name = "BtnCopiaDLLS";
             this.BtnCopiaDLLS.Size = new System.Drawing.Size(175, 23);
             this.BtnCopiaDLLS.TabIndex = 16;
@@ -246,9 +247,19 @@ namespace Baiana20
             this.boxLog.Location = new System.Drawing.Point(11, 360);
             this.boxLog.Multiline = true;
             this.boxLog.Name = "boxLog";
-            this.boxLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.boxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.boxLog.Size = new System.Drawing.Size(694, 130);
             this.boxLog.TabIndex = 27;
+            // 
+            // btPararProcesso
+            // 
+            this.btPararProcesso.Location = new System.Drawing.Point(531, 12);
+            this.btPararProcesso.Name = "btPararProcesso";
+            this.btPararProcesso.Size = new System.Drawing.Size(175, 22);
+            this.btPararProcesso.TabIndex = 28;
+            this.btPararProcesso.Text = "Parar Processo";
+            this.btPararProcesso.UseVisualStyleBackColor = true;
+            this.btPararProcesso.Click += new System.EventHandler(this.btPararProcesso_Click);
             // 
             // Baiana20
             // 
@@ -258,6 +269,7 @@ namespace Baiana20
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(717, 509);
+            this.Controls.Add(this.btPararProcesso);
             this.Controls.Add(this.boxLog);
             this.Controls.Add(this.PbProgresso);
             this.Controls.Add(this.CbFecharTerminar);
@@ -307,6 +319,7 @@ namespace Baiana20
         public System.Windows.Forms.CheckBox CbFecharTerminar;
         private System.Windows.Forms.Label label3;
         private TextBox boxLog;
+        private Button btPararProcesso;
     }
 }
 

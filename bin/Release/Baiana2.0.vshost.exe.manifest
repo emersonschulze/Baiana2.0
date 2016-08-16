@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Baiana2.0.exe" size="27136">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Baiana2.0.exe" size="27648">
       <assemblyIdentity name="Baiana2.0" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>jbmPo0KyNEjl74l03gSy9AZLJeKy6ZfcJmfoQ7okMPk=</dsig:DigestValue>
+        <dsig:DigestValue>huIMNXEEZ4+NdkmVMbNvXo9NkBX6440kJqLe26lobmQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
