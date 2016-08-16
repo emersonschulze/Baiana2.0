@@ -1,0 +1,1 @@
+MSBuild "E:\teste 2\Delphi\Especifico\Especifico.dproj" /flp:logfile="E:\teste 2\Delphi\Especifico\";errorsonly

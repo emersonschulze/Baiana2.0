@@ -1,0 +1,15 @@
+E:\Baiana\Baiana2.0\bin\Release\Baiana2.0.exe.config
+E:\Baiana\Baiana2.0\bin\Release\Baiana2.0.exe.manifest
+E:\Baiana\Baiana2.0\bin\Release\Baiana2.0.application
+E:\Baiana\Baiana2.0\bin\Release\Baiana2.0.exe
+E:\Baiana\Baiana2.0\bin\Release\Baiana2.0.pdb
+E:\Baiana\Baiana2.0\bin\Release\Microsoft.Office.InfoPath.Permission.dll
+E:\Baiana\Baiana2.0\obj\Release\Baiana20.Baiana20.resources
+E:\Baiana\Baiana2.0\obj\Release\Baiana20.Properties.Resources.resources
+E:\Baiana\Baiana2.0\obj\Release\Baiana20.csproj.GenerateResource.Cache
+E:\Baiana\Baiana2.0\obj\Release\Baiana2.0.TrustInfo.xml
+E:\Baiana\Baiana2.0\obj\Release\Baiana2.0.exe.manifest
+E:\Baiana\Baiana2.0\obj\Release\Baiana2.0.application
+E:\Baiana\Baiana2.0\obj\Release\Baiana2.0.exe
+E:\Baiana\Baiana2.0\obj\Release\Baiana2.0.pdb
+E:\Baiana\Baiana2.0\obj\Release\Baiana20.csprojResolveAssemblyReference.cache
