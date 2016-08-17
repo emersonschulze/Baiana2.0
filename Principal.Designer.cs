@@ -49,6 +49,7 @@ namespace Baiana20
             this.CbFecharTerminar = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.boxLog = new System.Windows.Forms.TextBox();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.SuspendLayout();
             // 
             // BtnCompilar
@@ -121,6 +122,9 @@ namespace Baiana20
             // 
             // PbProgresso
             // 
+            this.PbProgresso.AccessibleRole = System.Windows.Forms.AccessibleRole.ProgressBar;
+            this.PbProgresso.BackColor = System.Drawing.Color.Blue;
+            this.PbProgresso.ForeColor = System.Drawing.SystemColors.Desktop;
             this.PbProgresso.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.PbProgresso.Location = new System.Drawing.Point(11, 331);
             this.PbProgresso.Name = "PbProgresso";
@@ -294,7 +298,6 @@ namespace Baiana20
         private System.Windows.Forms.RadioButton RbSisVerificacao;
         private System.Windows.Forms.RadioButton RbEspecifico;
         private System.Windows.Forms.RadioButton RbBSWebService;
-        private System.Windows.Forms.ProgressBar PbProgresso;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox PathSubversion;
         private System.Windows.Forms.TextBox PathBsversion;
@@ -307,6 +310,8 @@ namespace Baiana20
         public System.Windows.Forms.CheckBox CbFecharTerminar;
         private System.Windows.Forms.Label label3;
         private TextBox boxLog;
+        public ProgressBar PbProgresso;
+        private ColorDialog colorDialog1;
     }
 }
 

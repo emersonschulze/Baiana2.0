@@ -22,10 +22,9 @@ namespace Baiana20
         {
             InitializeComponent();
             CarregarPredefinicoes();
-
+            
             diretorioBsversion = PathBsversion.Text;
             diretorioSubversion = PathSubversion.Text;
-
         }
 
         private void CarregarPredefinicoes()
@@ -102,6 +101,7 @@ namespace Baiana20
             LbMensagemAlerta.Text = mensagem;
             eventoLog.Add(mensagem);
             boxLog.Text = string.Join("\r\n", eventoLog);
+
         }
 
         private string ValorParametroSelecionado()
@@ -315,12 +315,15 @@ namespace Baiana20
 
         private void BtnCompilar_Click(object sender, EventArgs e)
         {
+            int error = 0;
+            Color cor = Color.Black;
             boxLog.Clear();
             eventoLog.Clear();
             LbMensagemAlerta.Text = string.Empty;
-            PbProgresso.BackColor = Color.Green;
+            PbProgresso.ForeColor = cor;
             PbProgresso.Value = 0;
-
+            colorDialog1.Color = cor;
+            
             DirectoryInfo DirDll = new DirectoryInfo(PathSubversion.Text + "\\ESPECIFICOCLIENTES");
             DirectoryInfo DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
 
@@ -334,7 +337,7 @@ namespace Baiana20
             }
             else
             {
-                MensagemProcesso("Compilando dproj da(s) operadora(s) selecionada(s)...");
+                MensagemProcesso("Compilando dproj da(s) operadora(s) selecionada(s)...\r\n");
                 PbProgresso.Visible = true;
                 PbProgresso.Minimum = 0;
 
@@ -360,12 +363,27 @@ namespace Baiana20
                                     Directory.CreateDirectory(contemPastaDLLL);
 
                                 AlterarParaReleaseEAlterarOutputDproj(operadoraSelecionada, rbSelecionado, diretorioFiltrado);
-                                AlterarBatEProcessar(rbSelecionado, diretorioFiltrado, operadoraSelecionada);
+                                error = AlterarBatEProcessar(rbSelecionado, diretorioFiltrado, operadoraSelecionada, aplicacoesSelecionadas.Count);
                             }
-                            MensagemProcesso(rbSelecionado + ".DLL compilada com sucesso para as aplicações");
-                        }
-                        PbProgresso.PerformStep();
 
+                            if (error == 0)
+                            {
+                                MensagemProcesso("\r\n" + rbSelecionado + ".DLL compilada com sucesso para as aplicações!");
+                            }
+                            else if (error == 1)
+                            {
+                                MensagemProcesso("\r\n Erro ao compilar " + rbSelecionado + "Dll!");
+                                cor = Color.Red;
+                            }
+                            else
+                            {
+                                MensagemProcesso("\r\n" + rbSelecionado + ".DLL Não foi compilada para uma ou mais aplicações!");
+                                cor = Color.Yellow;
+                            }
+                        }
+
+                        PbProgresso.ForeColor = cor;
+                        PbProgresso.PerformStep();
                         DesabilitaHabilitarOpcoesAposCompilar();
                     }
                     else
@@ -449,10 +467,13 @@ namespace Baiana20
 
         }
 
-        private void AlterarBatEProcessar(string rbSelecionado, string aplicacao, string operadora)
+        private int AlterarBatEProcessar(string rbSelecionado, string aplicacao, string operadora, int quantAplicacoes)
         {
             int linha = 0;
             string line;
+            string caminho = "";
+            int error;
+
 
             var arqBat = "Baiana20.bat";
             var diretorioBat = new DirectoryInfo(Directory.GetCurrentDirectory());
@@ -476,6 +497,7 @@ namespace Baiana20
                         {
                             var caminhoProjeto = aplicacao + "\\" + rbSelecionado;
                             line = line.Replace("[CAMINHO][PROJETO]", caminhoProjeto + ".dproj").Replace("[ERRORSLOG]", aplicacao + "\\" + "saida.txt");
+                            caminho = caminhoProjeto;
                         }
 
                         gravando.WriteLine(line);
@@ -487,35 +509,54 @@ namespace Baiana20
                     gravando.Close();
                 }
 
-                ProcessarBat(destinoTmp, rbSelecionado, operadora);
+                error = ProcessarBat(destinoTmp, rbSelecionado, operadora, quantAplicacoes);
 
                 File.Delete(destinoTmp);
                 Directory.Delete(diretorioTmp);
             }
+            return error;
         }
 
-        private void ProcessarBat(string diretorioBat, string rbSelecionado, string operadora)
+        private int ProcessarBat(string diretorioBat, string rbSelecionado, string operadora, int quantAplicacoes)
         {
+            int error = 0;
+
             Process process = new Process();
             process.StartInfo.FileName = diretorioBat;
-            process.StartInfo.CreateNoWindow = false;
             process.StartInfo.UseShellExecute = false;
+            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            process.StartInfo.RedirectStandardError = true;
+
             process.Start();
 
-            if (!process.StartInfo.ErrorDialog)
+            var erro = process.StandardError.ReadToEnd();
+
+            if (erro.Length < 0)
             {
                 MensagemProcesso(String.Format("Arquivo {0} compilado com Sucesso para Operadora {1}!", rbSelecionado + ".dll", operadora));
+                PbProgresso.Step = 1;
+                PbProgresso.PerformStep();
+            }
+            else if (quantAplicacoes <= 1)
+            {
+                MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora));
+                error = 1;
+                PbProgresso.ForeColor = Color.Red;
                 PbProgresso.Step = 1;
                 PbProgresso.PerformStep();
             }
             else
             {
                 MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora));
+                error = 2;
+                PbProgresso.ForeColor = Color.Yellow;
                 PbProgresso.Step = 1;
                 PbProgresso.PerformStep();
             }
-            
+
             process.WaitForExit();
+
+            return error;
         }
 
         private void BtnCopiaDLLS_Click(object sender, EventArgs e)
@@ -523,7 +564,7 @@ namespace Baiana20
             boxLog.Clear();
             eventoLog.Clear();
             LbMensagemAlerta.Text = string.Empty;
-            PbProgresso.BackColor = Color.Green;
+            PbProgresso.ForeColor = Color.Green;
             PbProgresso.Value = 0;
 
             try
@@ -535,7 +576,7 @@ namespace Baiana20
                 }
                 else
                 {
-                    MensagemProcesso("Copiando DLLS...");
+                    MensagemProcesso("Copiando DLLS...\r\n");
 
                     var aplicacoesBsversion =
                         Directory.GetDirectories(diretorioBsversion)
@@ -662,7 +703,7 @@ namespace Baiana20
 
                                 if (!File.Exists(arquivoOrigem))
                                 {
-                                    MensagemProcesso(String.Format("{0}.dll não existe na pasta de origem {1}!",
+                                    MensagemProcesso(String.Format("{0}.dll não existe na pasta de origem, tente compilar novamente. {1}!",
                                      dllACopiar.ToUpper(), arquivoOrigem));
                                 }
                                 else
@@ -696,6 +737,6 @@ namespace Baiana20
                 throw;
             }
         }
-        
+
     }
 }
