@@ -30,6 +30,7 @@ namespace Baiana20
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Baiana20));
             this.BtnCompilar = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.RbSisAtualizacao = new System.Windows.Forms.RadioButton();
@@ -157,6 +158,8 @@ namespace Baiana20
             // 
             // BtnCopiaDLLS
             // 
+            this.BtnCopiaDLLS.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.BtnCopiaDLLS.FlatAppearance.BorderColor = System.Drawing.Color.Blue;
             this.BtnCopiaDLLS.Location = new System.Drawing.Point(531, 65);
             this.BtnCopiaDLLS.Name = "BtnCopiaDLLS";
             this.BtnCopiaDLLS.Size = new System.Drawing.Size(175, 23);
@@ -245,10 +248,8 @@ namespace Baiana20
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(721, 513);
+            this.ClientSize = new System.Drawing.Size(721, 524);
             this.Controls.Add(this.boxLog);
             this.Controls.Add(this.CbFecharTerminar);
             this.Controls.Add(this.CbCompilarTodos);
@@ -267,6 +268,7 @@ namespace Baiana20
             this.Controls.Add(this.RbSisAtualizacao);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.BtnCompilar);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Baiana20";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

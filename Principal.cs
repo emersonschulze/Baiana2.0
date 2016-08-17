@@ -15,6 +15,7 @@ namespace Baiana20
     {
         private string diretorioSubversion;
         private string diretorioBsversion;
+        private int gerouErro = 0;
 
         private List<string> eventoLog = new List<string>();
 
@@ -23,7 +24,7 @@ namespace Baiana20
         {
             InitializeComponent();
             CarregarPredefinicoes();
-            
+
             diretorioBsversion = PathBsversion.Text;
             diretorioSubversion = PathSubversion.Text;
 
@@ -101,8 +102,13 @@ namespace Baiana20
             using (FileStream file = File.OpenWrite(configurationFile))
             {
                 writer.Serialize(file, configuracao);
+                file.Flush();
             }
             LbMensagemAlerta.Text = "Diretórios salvos!";
+
+            diretorioBsversion = PathBsversion.Text;
+            diretorioSubversion = PathSubversion.Text;
+
         }
 
         private void MensagemProcesso(string mensagem, Color corTexto)
@@ -110,7 +116,7 @@ namespace Baiana20
             LbMensagemAlerta.Text = mensagem;
             LbMensagemAlerta.ForeColor = corTexto;
             eventoLog.Add(LbMensagemAlerta.Text);
-            
+
             boxLog.Text = string.Join("\r\n", eventoLog);
             boxLog.SelectionStart = boxLog.TextLength;
             boxLog.ScrollToCaret();
@@ -183,7 +189,7 @@ namespace Baiana20
         {
             ValidarBtnCopiar();
             var caminhoSubversion = PathSubversion.Text;
-
+            
             var aplicacoesDisponiveis = DetectarAplicacoesDisponiveis(caminhoSubversion);
             if (aplicacoesDisponiveis.Any())
             {
@@ -328,14 +334,13 @@ namespace Baiana20
 
         private void BtnCompilar_Click(object sender, EventArgs e)
         {
-            int error = 0;
-            Brush cor = Brushes.Black;
+            Brush cor = Brushes.LimeGreen;
             boxLog.Clear();
             eventoLog.Clear();
             LbMensagemAlerta.Text = string.Empty;
             pbProgresso.Color = cor;
             pbProgresso.Value = 0;
-            
+
             DirectoryInfo DirDll = new DirectoryInfo(PathSubversion.Text + "\\ESPECIFICOCLIENTES");
             DirectoryInfo DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
 
@@ -375,16 +380,16 @@ namespace Baiana20
                                     Directory.CreateDirectory(contemPastaDLLL);
 
                                 AlterarParaReleaseEAlterarOutputDproj(operadoraSelecionada, rbSelecionado, diretorioFiltrado);
-                                error = AlterarBatEProcessar(rbSelecionado, diretorioFiltrado, operadoraSelecionada, aplicacoesSelecionadas.Count);
+                                AlterarBatEProcessar(rbSelecionado, diretorioFiltrado, operadoraSelecionada, aplicacoesSelecionadas.Count);
                             }
 
-                            if (error == 0)
+                            if (gerouErro == 0)
                             {
                                 MensagemProcesso("\r\n" + rbSelecionado + ".DLL compilada com sucesso para as aplicações!", Color.Blue);
                             }
-                            else if (error == 1)
+                            else if (gerouErro == 1)
                             {
-                                MensagemProcesso("\r\n Erro ao compilar " + rbSelecionado + "Dll!", Color.Red);
+                                MensagemProcesso("\r\nErro ao compilar " + rbSelecionado + "DLL!", Color.Red);
                                 cor = Brushes.Red;
                             }
                             else
@@ -423,8 +428,6 @@ namespace Baiana20
             var diretorioTmp = diretorioFiltrado + "\\tmp";
             if (!Directory.Exists(diretorioTmp))
                 Directory.CreateDirectory(diretorioTmp);
-
-
 
             var arqDproj = rbSelecionado + ".dproj";
 
@@ -479,13 +482,10 @@ namespace Baiana20
 
         }
 
-        private int AlterarBatEProcessar(string rbSelecionado, string aplicacao, string operadora, int quantAplicacoes)
+        private void AlterarBatEProcessar(string rbSelecionado, string aplicacao, string operadora, int quantAplicacoes)
         {
             int linha = 0;
             string line;
-            string caminho = "";
-            int error;
-
 
             var arqBat = "Baiana20.bat";
             var diretorioBat = new DirectoryInfo(Directory.GetCurrentDirectory());
@@ -509,7 +509,6 @@ namespace Baiana20
                         {
                             var caminhoProjeto = aplicacao + "\\" + rbSelecionado;
                             line = line.Replace("[CAMINHO][PROJETO]", caminhoProjeto + ".dproj").Replace("[ERRORSLOG]", aplicacao + "\\" + "saida.txt");
-                            caminho = caminhoProjeto;
                         }
 
                         gravando.WriteLine(line);
@@ -521,55 +520,54 @@ namespace Baiana20
                     gravando.Close();
                 }
 
-                error = ProcessarBat(destinoTmp, rbSelecionado, operadora, quantAplicacoes);
+                ProcessarBat(destinoTmp, rbSelecionado, operadora, quantAplicacoes, aplicacao);
 
                 File.Delete(destinoTmp);
                 Directory.Delete(diretorioTmp);
             }
-            return error;
         }
 
-        private int ProcessarBat(string diretorioBat, string rbSelecionado, string operadora, int quantAplicacoes)
+        private void ProcessarBat(string diretorioBat, string rbSelecionado, string operadora, int quantAplicacoes, string aplicacao)
         {
-            int error = 0;
-
             Process process = new Process();
+
             process.StartInfo.FileName = diretorioBat;
             process.StartInfo.UseShellExecute = false;
-            process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            process.StartInfo.RedirectStandardError = true;
+            process.StartInfo.CreateNoWindow = true;
 
             process.Start();
 
-            var erro = process.StandardError.ReadToEnd();
-
-            if (erro.Length < 0)
-            {
-                MensagemProcesso(String.Format("Arquivo {0} compilado com Sucesso para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Blue);
-                pbProgresso.Step = 1;
-                pbProgresso.PerformStep();
-            }
-            else if (quantAplicacoes <= 1)
-            {
-                MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Red);
-                error = 1;
-                pbProgresso.Color = Brushes.Red;
-                pbProgresso.Step = 1;
-                pbProgresso.PerformStep();
-            }
-            else
-            {
-                MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Red);
-
-                error = 2;
-                pbProgresso.Color = Brushes.Yellow;
-                pbProgresso.Step = 1;
-                pbProgresso.PerformStep();
-            }
-
             process.WaitForExit();
 
-            return error;
+            var origemSaida = Path.Combine(aplicacao, "saida.txt");
+
+            using (StreamReader lendo = new StreamReader(origemSaida))
+            {
+                if (String.IsNullOrEmpty(lendo.ReadToEnd()))
+                {
+                    MensagemProcesso(String.Format("Arquivo {0} compilado com Sucesso para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Blue);
+                    pbProgresso.Step = 1;
+                    pbProgresso.PerformStep();
+                }
+                else if (quantAplicacoes <= 1)
+                {
+                    MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Red);
+                    gerouErro = 1;
+                    pbProgresso.Color = Brushes.Red;
+                    pbProgresso.Step = 1;
+                    pbProgresso.PerformStep();
+                }
+                else
+                {
+                    MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Red);
+
+                    gerouErro = 2;
+                    pbProgresso.Color = Brushes.Yellow;
+                    pbProgresso.Step = 1;
+                    pbProgresso.PerformStep();
+                }
+            }
+
         }
 
         private void BtnCopiaDLLS_Click(object sender, EventArgs e)
@@ -577,7 +575,7 @@ namespace Baiana20
             boxLog.Clear();
             eventoLog.Clear();
             LbMensagemAlerta.Text = string.Empty;
-            pbProgresso.Color = Brushes.Green;
+            pbProgresso.Color = Brushes.LimeGreen;
             pbProgresso.Value = 0;
 
             try
@@ -614,8 +612,6 @@ namespace Baiana20
                                     Copiar(aplicacoesSelecionadas);
 
                                     pbProgresso.PerformStep();
-                                    MensagemProcesso("Arquivos copiados com sucesso!", Color.Blue);
-
                                     if (CbFecharTerminar.Checked)
                                         this.Close();
                                 }
@@ -716,8 +712,8 @@ namespace Baiana20
 
                                 if (!File.Exists(arquivoOrigem))
                                 {
-                                    MensagemProcesso(String.Format("{0}.dll não existe na pasta de origem, tente compilar novamente. {1}!",
-                                     dllACopiar.ToUpper(), arquivoOrigem), Color.Red);
+                                    MensagemProcesso(String.Format("{0}.dll não existe na pasta de origem, tente compilar novamente. {1} para o caminho {2}!",
+                                     dllACopiar.ToUpper(), dllACopiar, caminhoDllSV), Color.Red);
                                 }
                                 else
                                 {
@@ -733,7 +729,7 @@ namespace Baiana20
                     pbProgresso.Maximum = 1;
                     pbProgresso.Minimum = 0;
                     pbProgresso.PerformStep();
-                    MensagemProcesso("Dlls copiados com sucesso!", Color.Blue);
+                    MensagemProcesso("\r\nDLLS copiadas com sucesso!", Color.Blue);
                     if (CbFecharTerminar.Checked)
                         this.Close();
                 }
