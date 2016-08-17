@@ -18,6 +18,7 @@ namespace Baiana20
 
         private List<string> eventoLog = new List<string>();
 
+        BarraDeProgresso pbProgresso = new BarraDeProgresso();
         public Baiana20()
         {
             InitializeComponent();
@@ -25,6 +26,14 @@ namespace Baiana20
             
             diretorioBsversion = PathBsversion.Text;
             diretorioSubversion = PathSubversion.Text;
+
+            this.Controls.Add(pbProgresso);
+            pbProgresso.AccessibleRole = System.Windows.Forms.AccessibleRole.ProgressBar;
+            pbProgresso.Location = new System.Drawing.Point(11, 331);
+            pbProgresso.Name = "PbProgresso";
+            pbProgresso.Size = new System.Drawing.Size(694, 23);
+            pbProgresso.Style = ProgressBarStyle.Blocks;
+
         }
 
         private void CarregarPredefinicoes()
@@ -316,13 +325,12 @@ namespace Baiana20
         private void BtnCompilar_Click(object sender, EventArgs e)
         {
             int error = 0;
-            Color cor = Color.Black;
+            Brush cor = Brushes.Black;
             boxLog.Clear();
             eventoLog.Clear();
             LbMensagemAlerta.Text = string.Empty;
-            PbProgresso.ForeColor = cor;
-            PbProgresso.Value = 0;
-            colorDialog1.Color = cor;
+            pbProgresso.Color = cor;
+            pbProgresso.Value = 0;
             
             DirectoryInfo DirDll = new DirectoryInfo(PathSubversion.Text + "\\ESPECIFICOCLIENTES");
             DirectoryInfo DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
@@ -338,8 +346,8 @@ namespace Baiana20
             else
             {
                 MensagemProcesso("Compilando dproj da(s) operadora(s) selecionada(s)...\r\n");
-                PbProgresso.Visible = true;
-                PbProgresso.Minimum = 0;
+                pbProgresso.Visible = true;
+                pbProgresso.Minimum = 0;
 
                 var aplicacoesSelecionadas = DetectarAplicacoesSelecionadas();
                 var rbSelecionado = ValorParametroSelecionado();
@@ -350,7 +358,7 @@ namespace Baiana20
                     {
                         var diretorioFiltrado = diretorioACompilar.First(x => x.Contains(rbSelecionado.ToUpper()));
 
-                        PbProgresso.Maximum = aplicacoesSelecionadas.Count;
+                        pbProgresso.Maximum = aplicacoesSelecionadas.Count;
 
                         if (!string.IsNullOrEmpty(diretorioFiltrado))
                         {
@@ -373,17 +381,17 @@ namespace Baiana20
                             else if (error == 1)
                             {
                                 MensagemProcesso("\r\n Erro ao compilar " + rbSelecionado + "Dll!");
-                                cor = Color.Red;
+                                cor = Brushes.Red;
                             }
                             else
                             {
                                 MensagemProcesso("\r\n" + rbSelecionado + ".DLL Não foi compilada para uma ou mais aplicações!");
-                                cor = Color.Yellow;
+                                cor = Brushes.Yellow;
                             }
                         }
 
-                        PbProgresso.ForeColor = cor;
-                        PbProgresso.PerformStep();
+                        pbProgresso.Color = cor;
+                        pbProgresso.PerformStep();
                         DesabilitaHabilitarOpcoesAposCompilar();
                     }
                     else
@@ -534,24 +542,24 @@ namespace Baiana20
             if (erro.Length < 0)
             {
                 MensagemProcesso(String.Format("Arquivo {0} compilado com Sucesso para Operadora {1}!", rbSelecionado + ".dll", operadora));
-                PbProgresso.Step = 1;
-                PbProgresso.PerformStep();
+                pbProgresso.Step = 1;
+                pbProgresso.PerformStep();
             }
             else if (quantAplicacoes <= 1)
             {
                 MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora));
                 error = 1;
-                PbProgresso.ForeColor = Color.Red;
-                PbProgresso.Step = 1;
-                PbProgresso.PerformStep();
+                pbProgresso.Color = Brushes.Red;
+                pbProgresso.Step = 1;
+                pbProgresso.PerformStep();
             }
             else
             {
                 MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora));
                 error = 2;
-                PbProgresso.ForeColor = Color.Yellow;
-                PbProgresso.Step = 1;
-                PbProgresso.PerformStep();
+                pbProgresso.Color = Brushes.Yellow;
+                pbProgresso.Step = 1;
+                pbProgresso.PerformStep();
             }
 
             process.WaitForExit();
@@ -564,8 +572,8 @@ namespace Baiana20
             boxLog.Clear();
             eventoLog.Clear();
             LbMensagemAlerta.Text = string.Empty;
-            PbProgresso.ForeColor = Color.Green;
-            PbProgresso.Value = 0;
+            pbProgresso.Color = Brushes.Green;
+            pbProgresso.Value = 0;
 
             try
             {
@@ -583,11 +591,11 @@ namespace Baiana20
                             .Where(x => x.Contains("ESPECIFICOCLIENTES"))
                             .ToList();
 
-                    PbProgresso.Visible = true;
-                    PbProgresso.Minimum = 0;
+                    pbProgresso.Visible = true;
+                    pbProgresso.Minimum = 0;
 
-                    PbProgresso.Maximum = aplicacoesBsversion.Count;
-                    PbProgresso.Step = 1;
+                    pbProgresso.Maximum = aplicacoesBsversion.Count;
+                    pbProgresso.Step = 1;
 
                     var aplicacoesSelecionadas = DetectarAplicacoesSelecionadas();
                     try
@@ -600,7 +608,7 @@ namespace Baiana20
                                 {
                                     Copiar(aplicacoesSelecionadas);
 
-                                    PbProgresso.PerformStep();
+                                    pbProgresso.PerformStep();
                                     MensagemProcesso("Arquivos copiados com sucesso!");
 
                                     if (CbFecharTerminar.Checked)
@@ -717,9 +725,9 @@ namespace Baiana20
                         }
                     }
 
-                    PbProgresso.Maximum = 1;
-                    PbProgresso.Minimum = 0;
-                    PbProgresso.PerformStep();
+                    pbProgresso.Maximum = 1;
+                    pbProgresso.Minimum = 0;
+                    pbProgresso.PerformStep();
                     MensagemProcesso("Dlls copiados com sucesso!");
                     if (CbFecharTerminar.Checked)
                         this.Close();

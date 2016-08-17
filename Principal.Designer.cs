@@ -36,7 +36,6 @@ namespace Baiana20
             this.RbSisVerificacao = new System.Windows.Forms.RadioButton();
             this.RbEspecifico = new System.Windows.Forms.RadioButton();
             this.RbBSWebService = new System.Windows.Forms.RadioButton();
-            this.PbProgresso = new System.Windows.Forms.ProgressBar();
             this.label2 = new System.Windows.Forms.Label();
             this.PathSubversion = new System.Windows.Forms.TextBox();
             this.PathBsversion = new System.Windows.Forms.TextBox();
@@ -49,7 +48,6 @@ namespace Baiana20
             this.CbFecharTerminar = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.boxLog = new System.Windows.Forms.TextBox();
-            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.SuspendLayout();
             // 
             // BtnCompilar
@@ -119,17 +117,6 @@ namespace Baiana20
             this.RbBSWebService.TabStop = true;
             this.RbBSWebService.Text = "BSWebService";
             this.RbBSWebService.UseVisualStyleBackColor = true;
-            // 
-            // PbProgresso
-            // 
-            this.PbProgresso.AccessibleRole = System.Windows.Forms.AccessibleRole.ProgressBar;
-            this.PbProgresso.BackColor = System.Drawing.Color.Blue;
-            this.PbProgresso.ForeColor = System.Drawing.SystemColors.Desktop;
-            this.PbProgresso.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.PbProgresso.Location = new System.Drawing.Point(11, 331);
-            this.PbProgresso.Name = "PbProgresso";
-            this.PbProgresso.Size = new System.Drawing.Size(694, 23);
-            this.PbProgresso.TabIndex = 8;
             // 
             // label2
             // 
@@ -263,7 +250,6 @@ namespace Baiana20
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(717, 509);
             this.Controls.Add(this.boxLog);
-            this.Controls.Add(this.PbProgresso);
             this.Controls.Add(this.CbFecharTerminar);
             this.Controls.Add(this.CbCompilarTodos);
             this.Controls.Add(this.label3);
@@ -310,8 +296,6 @@ namespace Baiana20
         public System.Windows.Forms.CheckBox CbFecharTerminar;
         private System.Windows.Forms.Label label3;
         private TextBox boxLog;
-        public ProgressBar PbProgresso;
-        private ColorDialog colorDialog1;
     }
 }
 
