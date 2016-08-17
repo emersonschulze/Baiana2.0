@@ -205,7 +205,7 @@ namespace Baiana20
             this.LbMensagemAlerta.AutoSize = true;
             this.LbMensagemAlerta.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             this.LbMensagemAlerta.ForeColor = System.Drawing.Color.Blue;
-            this.LbMensagemAlerta.Location = new System.Drawing.Point(282, 493);
+            this.LbMensagemAlerta.Location = new System.Drawing.Point(252, 493);
             this.LbMensagemAlerta.Name = "LbMensagemAlerta";
             this.LbMensagemAlerta.Size = new System.Drawing.Size(0, 13);
             this.LbMensagemAlerta.TabIndex = 22;
@@ -238,7 +238,7 @@ namespace Baiana20
             this.boxLog.Multiline = true;
             this.boxLog.Name = "boxLog";
             this.boxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.boxLog.Size = new System.Drawing.Size(694, 130);
+            this.boxLog.Size = new System.Drawing.Size(698, 130);
             this.boxLog.TabIndex = 27;
             // 
             // Baiana20
@@ -248,7 +248,7 @@ namespace Baiana20
             this.AutoScroll = true;
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(717, 509);
+            this.ClientSize = new System.Drawing.Size(721, 513);
             this.Controls.Add(this.boxLog);
             this.Controls.Add(this.CbFecharTerminar);
             this.Controls.Add(this.CbCompilarTodos);

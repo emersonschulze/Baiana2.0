@@ -105,12 +105,16 @@ namespace Baiana20
             LbMensagemAlerta.Text = "Diretórios salvos!";
         }
 
-        private void MensagemProcesso(string mensagem)
+        private void MensagemProcesso(string mensagem, Color corTexto)
         {
             LbMensagemAlerta.Text = mensagem;
-            eventoLog.Add(mensagem);
+            LbMensagemAlerta.ForeColor = corTexto;
+            eventoLog.Add(LbMensagemAlerta.Text);
+            
             boxLog.Text = string.Join("\r\n", eventoLog);
-
+            boxLog.SelectionStart = boxLog.TextLength;
+            boxLog.ScrollToCaret();
+            boxLog.Refresh();
         }
 
         private string ValorParametroSelecionado()
@@ -340,12 +344,12 @@ namespace Baiana20
 
             if (!ValidarDiretoriosSelecionados())
             {
-                MensagemProcesso("Diretório invalido detectado, por favor revise os caminhos selecionados!");
+                MensagemProcesso("Diretório invalido detectado, por favor revise os caminhos selecionados!", Color.Red);
                 new ArgumentNullException();
             }
             else
             {
-                MensagemProcesso("Compilando dproj da(s) operadora(s) selecionada(s)...\r\n");
+                MensagemProcesso("Compilando dproj da(s) operadora(s) selecionada(s)...\r\n", Color.Blue);
                 pbProgresso.Visible = true;
                 pbProgresso.Minimum = 0;
 
@@ -376,16 +380,16 @@ namespace Baiana20
 
                             if (error == 0)
                             {
-                                MensagemProcesso("\r\n" + rbSelecionado + ".DLL compilada com sucesso para as aplicações!");
+                                MensagemProcesso("\r\n" + rbSelecionado + ".DLL compilada com sucesso para as aplicações!", Color.Blue);
                             }
                             else if (error == 1)
                             {
-                                MensagemProcesso("\r\n Erro ao compilar " + rbSelecionado + "Dll!");
+                                MensagemProcesso("\r\n Erro ao compilar " + rbSelecionado + "Dll!", Color.Red);
                                 cor = Brushes.Red;
                             }
                             else
                             {
-                                MensagemProcesso("\r\n" + rbSelecionado + ".DLL Não foi compilada para uma ou mais aplicações!");
+                                MensagemProcesso("\r\n" + rbSelecionado + ".DLL Não foi compilada para uma ou mais aplicações!", Color.Red);
                                 cor = Brushes.Yellow;
                             }
                         }
@@ -396,13 +400,13 @@ namespace Baiana20
                     }
                     else
                     {
-                        MensagemProcesso("Selecione ao menos uma DLL para compilar e copiar!");
+                        MensagemProcesso("Selecione ao menos uma DLL para compilar e copiar!", Color.Red);
                         new ArgumentNullException();
                     }
                 }
                 else
                 {
-                    MensagemProcesso("Selecione ao menos uma Operadora!");
+                    MensagemProcesso("Selecione ao menos uma Operadora!", Color.Red);
                     new ArgumentNullException();
                 }
             }
@@ -541,13 +545,13 @@ namespace Baiana20
 
             if (erro.Length < 0)
             {
-                MensagemProcesso(String.Format("Arquivo {0} compilado com Sucesso para Operadora {1}!", rbSelecionado + ".dll", operadora));
+                MensagemProcesso(String.Format("Arquivo {0} compilado com Sucesso para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Blue);
                 pbProgresso.Step = 1;
                 pbProgresso.PerformStep();
             }
             else if (quantAplicacoes <= 1)
             {
-                MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora));
+                MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Red);
                 error = 1;
                 pbProgresso.Color = Brushes.Red;
                 pbProgresso.Step = 1;
@@ -555,7 +559,8 @@ namespace Baiana20
             }
             else
             {
-                MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora));
+                MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Red);
+
                 error = 2;
                 pbProgresso.Color = Brushes.Yellow;
                 pbProgresso.Step = 1;
@@ -579,12 +584,12 @@ namespace Baiana20
             {
                 if (!ValidarDiretoriosSelecionados())
                 {
-                    MensagemProcesso("Diretório invalido detectado, por favor revise os caminhos selecionados!");
+                    MensagemProcesso("Diretório invalido detectado, por favor revise os caminhos selecionados!", Color.Red);
                     new ArgumentNullException();
                 }
                 else
                 {
-                    MensagemProcesso("Copiando DLLS...\r\n");
+                    MensagemProcesso("Copiando DLLS...\r\n", Color.Blue);
 
                     var aplicacoesBsversion =
                         Directory.GetDirectories(diretorioBsversion)
@@ -609,14 +614,14 @@ namespace Baiana20
                                     Copiar(aplicacoesSelecionadas);
 
                                     pbProgresso.PerformStep();
-                                    MensagemProcesso("Arquivos copiados com sucesso!");
+                                    MensagemProcesso("Arquivos copiados com sucesso!", Color.Blue);
 
                                     if (CbFecharTerminar.Checked)
                                         this.Close();
                                 }
                                 else
                                 {
-                                    MensagemProcesso("Selecione ao menos uma DLL para compilar e copiar!");
+                                    MensagemProcesso("Selecione ao menos uma DLL para compilar e copiar!", Color.Red);
                                     new ArgumentNullException();
                                 }
                             }
@@ -634,7 +639,7 @@ namespace Baiana20
                         }
                         else
                         {
-                            MensagemProcesso("Selecione ao menos uma Operadora!");
+                            MensagemProcesso("Selecione ao menos uma Operadora!", Color.Red);
                             new ArgumentNullException();
                         }
                     }
@@ -686,7 +691,7 @@ namespace Baiana20
 
                 if (dllACopiar == String.Empty)
                 {
-                    MensagemProcesso("Nenhuma Opção de DLL selecionada");
+                    MensagemProcesso("Nenhuma Opção de DLL selecionada", Color.Red);
                     new ArgumentNullException();
                 }
                 else
@@ -712,13 +717,13 @@ namespace Baiana20
                                 if (!File.Exists(arquivoOrigem))
                                 {
                                     MensagemProcesso(String.Format("{0}.dll não existe na pasta de origem, tente compilar novamente. {1}!",
-                                     dllACopiar.ToUpper(), arquivoOrigem));
+                                     dllACopiar.ToUpper(), arquivoOrigem), Color.Red);
                                 }
                                 else
                                 {
                                     File.Copy(arquivoOrigem, arquivoDestino, true);
                                     MensagemProcesso(String.Format("{0}.dll copiada com sucesso para o destino {1}!",
-                                        dllACopiar.ToUpper(), aplicacaoBsVersion));
+                                        dllACopiar.ToUpper(), aplicacaoBsVersion), Color.Red);
                                 }
                             }
                             boxLog.Controls.Owner.Text = eventoLog.ToString();
@@ -728,7 +733,7 @@ namespace Baiana20
                     pbProgresso.Maximum = 1;
                     pbProgresso.Minimum = 0;
                     pbProgresso.PerformStep();
-                    MensagemProcesso("Dlls copiados com sucesso!");
+                    MensagemProcesso("Dlls copiados com sucesso!", Color.Blue);
                     if (CbFecharTerminar.Checked)
                         this.Close();
                 }
