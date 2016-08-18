@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <Configuracoes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <DiretorioSubversion>E:\Subversion\AG\Corrente</DiretorioSubversion>
-  <DiretorioBsversion>E:\TesteBsVersion</DiretorioBsversion>
+  <DiretorioSubversion>C:\Subversion\AG\Corrente</DiretorioSubversion>
+  <DiretorioBsversion>C:\BSVERSION\AG\Corrente</DiretorioBsversion>
   <CompilarTodos>false</CompilarTodos>
   <FecharTerminar>false</FecharTerminar>
+  <RbEspecifico>false</RbEspecifico>
 </Configuracoes>

@@ -14,5 +14,6 @@ namespace Baiana20
         public string DiretorioBsversion { get; set; }
         public bool CompilarTodos { get; set; }
         public bool FecharTerminar { get; set; }
+        public bool RbEspecifico { get; set; }
     }
 }

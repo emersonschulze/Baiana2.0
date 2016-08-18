@@ -16,6 +16,9 @@ namespace Baiana20
         private string diretorioSubversion;
         private string diretorioBsversion;
         private int gerouErro = 0;
+        private string caminhoOrigemDproj;
+        private string caminhoTmpDproj;
+        private string caminhoTmp2;
 
         private List<string> eventoLog = new List<string>();
 
@@ -47,9 +50,11 @@ namespace Baiana20
                 using (FileStream input = File.OpenRead(configurationFile))
                 {
                     Configuracoes configuracao = reader.Deserialize(input) as Configuracoes;
+                    configuracao.RbEspecifico = true;
                     PathSubversion.Text = configuracao.DiretorioSubversion;
                     PathBsversion.Text = configuracao.DiretorioBsversion;
                     CbFecharTerminar.Checked = configuracao.FecharTerminar;
+                    RbEspecifico.Checked = configuracao.RbEspecifico;
                     CbCompilarTodos.Checked = configuracao.CompilarTodos;
                 }
             }
@@ -91,6 +96,7 @@ namespace Baiana20
             configuracao.DiretorioBsversion = PathBsversion.Text;
             configuracao.FecharTerminar = CbFecharTerminar.Checked;
             configuracao.CompilarTodos = CbCompilarTodos.Checked;
+
             var configurationFile = currentDirectory + "\\configuracoes.xml";
             if (File.Exists(configurationFile))
             {
@@ -126,10 +132,11 @@ namespace Baiana20
         private string ValorParametroSelecionado()
         {
             var especifico = RbEspecifico;
+
             var sisAtualizacao = RbSisAtualizacao;
             var sisVerificacao = RbSisVerificacao;
             var bsWebService = RbBSWebService;
-            var selecionado = string.Empty;
+            var selecionado = String.Empty;
 
             if (especifico.Checked == true)
             {
@@ -157,6 +164,7 @@ namespace Baiana20
 
             if (!Directory.Exists(diretorioSubversion) || !Directory.Exists(diretorioBsversion))
                 return false;
+
             var subDiretoriosSubVersion = Directory.GetDirectories(diretorioSubversion);
             var subDiretoriosBsVersion = Directory.GetDirectories(diretorioBsversion);
             var contemPastasSV = subDiretoriosSubVersion.Any(x => x.Contains("ESPECIFICOCLIENTES"));
@@ -189,7 +197,7 @@ namespace Baiana20
         {
             ValidarBtnCopiar();
             var caminhoSubversion = PathSubversion.Text;
-            
+
             var aplicacoesDisponiveis = DetectarAplicacoesDisponiveis(caminhoSubversion);
             if (aplicacoesDisponiveis.Any())
             {
@@ -276,7 +284,8 @@ namespace Baiana20
                 {
                     if (c.GetType().Name == "CheckBox")
                     {
-                        this.Controls.Remove(c);
+                        if (((CheckBox)c).Text != "Compilar Todos" && ((CheckBox)c).Text != "Fechar ao Terminar")
+                            this.Controls.Remove(c);
                     }
                 }
             }
@@ -295,7 +304,6 @@ namespace Baiana20
                         {
                             resultados.Add(c.Text);
                         }
-
                     }
                     if (((CheckBox)c).Text == "Compilar Todos" || ((CheckBox)c).Text == "Fechar ao Terminar")
                     {
@@ -316,6 +324,9 @@ namespace Baiana20
                     if (c.GetType().Name == "CheckBox")
                     {
                         ((CheckBox)c).Checked = true;
+
+                        if (((CheckBox)c).Text == "Fechar ao Terminar")
+                            ((CheckBox)c).Checked = false;
                     }
                 }
             }
@@ -334,86 +345,102 @@ namespace Baiana20
 
         private void BtnCompilar_Click(object sender, EventArgs e)
         {
-            Brush cor = Brushes.LimeGreen;
-            boxLog.Clear();
-            eventoLog.Clear();
-            LbMensagemAlerta.Text = string.Empty;
-            pbProgresso.Color = cor;
-            pbProgresso.Value = 0;
-
-            DirectoryInfo DirDll = new DirectoryInfo(PathSubversion.Text + "\\ESPECIFICOCLIENTES");
-            DirectoryInfo DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
-
-            var caminhoDllOperadora = Directory.GetDirectories(DirDll.ToString()).ToList();
-            var diretorioACompilar = Directory.GetDirectories(DirDproj.ToString()).ToList();
-
-            if (!ValidarDiretoriosSelecionados())
+            try
             {
-                MensagemProcesso("Diretório invalido detectado, por favor revise os caminhos selecionados!", Color.Red);
-                new ArgumentNullException();
-            }
-            else
-            {
-                MensagemProcesso("Compilando dproj da(s) operadora(s) selecionada(s)...\r\n", Color.Blue);
-                pbProgresso.Visible = true;
-                pbProgresso.Minimum = 0;
 
-                var aplicacoesSelecionadas = DetectarAplicacoesSelecionadas();
-                var rbSelecionado = ValorParametroSelecionado();
 
-                if (aplicacoesSelecionadas.Any())
+                if (!ValidarDiretoriosSelecionados())
                 {
-                    if (ValorParametroSelecionado().Any())
-                    {
-                        var diretorioFiltrado = diretorioACompilar.First(x => x.Contains(rbSelecionado.ToUpper()));
-
-                        pbProgresso.Maximum = aplicacoesSelecionadas.Count;
-
-                        if (!string.IsNullOrEmpty(diretorioFiltrado))
-                        {
-                            foreach (var operadoraSelecionada in aplicacoesSelecionadas)
-                            {
-                                var dirDllOperadora = caminhoDllOperadora.First(x => x.Contains(operadoraSelecionada));
-                                var contemPastaDLLL = Path.Combine(dirDllOperadora + "\\DLLS");
-
-                                if (!Directory.Exists(contemPastaDLLL))
-                                    Directory.CreateDirectory(contemPastaDLLL);
-
-                                AlterarParaReleaseEAlterarOutputDproj(operadoraSelecionada, rbSelecionado, diretorioFiltrado);
-                                AlterarBatEProcessar(rbSelecionado, diretorioFiltrado, operadoraSelecionada, aplicacoesSelecionadas.Count);
-                            }
-
-                            if (gerouErro == 0)
-                            {
-                                MensagemProcesso("\r\n" + rbSelecionado + ".DLL compilada com sucesso para as aplicações!", Color.Blue);
-                            }
-                            else if (gerouErro == 1)
-                            {
-                                MensagemProcesso("\r\nErro ao compilar " + rbSelecionado + "DLL!", Color.Red);
-                                cor = Brushes.Red;
-                            }
-                            else
-                            {
-                                MensagemProcesso("\r\n" + rbSelecionado + ".DLL Não foi compilada para uma ou mais aplicações!", Color.Red);
-                                cor = Brushes.Yellow;
-                            }
-                        }
-
-                        pbProgresso.Color = cor;
-                        pbProgresso.PerformStep();
-                        DesabilitaHabilitarOpcoesAposCompilar();
-                    }
-                    else
-                    {
-                        MensagemProcesso("Selecione ao menos uma DLL para compilar e copiar!", Color.Red);
-                        new ArgumentNullException();
-                    }
+                    MensagemProcesso("Diretório invalido detectado, por favor revise os caminhos selecionados!", Color.Red);
+                    new ArgumentNullException();
                 }
                 else
                 {
-                    MensagemProcesso("Selecione ao menos uma Operadora!", Color.Red);
-                    new ArgumentNullException();
+                    Brush cor = Brushes.LimeGreen;
+                    boxLog.Clear();
+                    eventoLog.Clear();
+                    LbMensagemAlerta.Text = string.Empty;
+                    pbProgresso.Color = cor;
+                    pbProgresso.Value = 0;
+
+                    DirectoryInfo DirDll = new DirectoryInfo(PathSubversion.Text + "\\ESPECIFICOCLIENTES");
+                    DirectoryInfo DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
+
+                    var caminhoDllOperadora = Directory.GetDirectories(DirDll.ToString()).ToList();
+                    var diretorioACompilar = Directory.GetDirectories(DirDproj.ToString()).ToList();
+
+
+                    MensagemProcesso("Compilando dproj da(s) operadora(s) selecionada(s)...\r\n", Color.Blue);
+                    pbProgresso.Visible = true;
+                    pbProgresso.Minimum = 0;
+
+                    var aplicacoesSelecionadas = DetectarAplicacoesSelecionadas();
+                    var rbSelecionado = ValorParametroSelecionado();
+
+                    if (aplicacoesSelecionadas.Any())
+                    {
+                        if (ValorParametroSelecionado().Any())
+                        {
+                            var diretorioFiltrado = diretorioACompilar.First(x => x.Contains(rbSelecionado.ToUpper()));
+
+                            pbProgresso.Maximum = aplicacoesSelecionadas.Count;
+
+                            if (!string.IsNullOrEmpty(diretorioFiltrado))
+                            {
+                                foreach (var operadoraSelecionada in aplicacoesSelecionadas)
+                                {
+                                    var dirDllOperadora = caminhoDllOperadora.First(x => x.Contains(operadoraSelecionada));
+                                    var contemPastaDLLL = Path.Combine(dirDllOperadora + "\\DLLS");
+
+                                    if (!Directory.Exists(contemPastaDLLL))
+                                        Directory.CreateDirectory(contemPastaDLLL);
+
+                                    AlterarParaReleaseEAlterarOutputDproj(operadoraSelecionada, rbSelecionado, diretorioFiltrado);
+                                    AlterarBatEProcessar(rbSelecionado, diretorioFiltrado, operadoraSelecionada, aplicacoesSelecionadas.Count);
+
+                                }
+
+                                if (gerouErro == 0)
+                                {
+                                    MensagemProcesso("\r\n" + rbSelecionado + ".DLL compilada com sucesso para as aplicações!", Color.Blue);
+                                }
+                                else if (gerouErro == 1)
+                                {
+                                    MensagemProcesso("\r\nErro ao compilar " + rbSelecionado + "DLL!", Color.Red);
+                                    cor = Brushes.Red;
+                                }
+                                else
+                                {
+                                    MensagemProcesso("\r\n" + rbSelecionado + ".DLL Não foi compilada para uma ou mais aplicações!", Color.Red);
+                                    cor = Brushes.Yellow;
+                                }
+                            }
+
+                            File.Copy(caminhoTmpDproj, caminhoOrigemDproj, true);
+                            File.Delete(caminhoTmpDproj);
+                            Directory.Delete(caminhoTmp2);
+
+                            pbProgresso.Color = cor;
+                            pbProgresso.PerformStep();
+                            DesabilitaHabilitarOpcoesAposCompilar();
+                        }
+                        else
+                        {
+                            MensagemProcesso("Selecione ao menos uma DLL para compilar e copiar!", Color.Red);
+                            new ArgumentNullException();
+                        }
+                    }
+                    else
+                    {
+                        MensagemProcesso("Selecione ao menos uma Operadora!", Color.Red);
+                        new ArgumentNullException();
+                    }
+
                 }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                MensagemProcesso("Usuário sem permissão de acesso, execute em modo administrador", Color.Red);
             }
         }
 
@@ -429,12 +456,23 @@ namespace Baiana20
             if (!Directory.Exists(diretorioTmp))
                 Directory.CreateDirectory(diretorioTmp);
 
+            var diretorioTmpBackup = diretorioFiltrado + "\\tmp2";
+            if (!Directory.Exists(diretorioTmpBackup))
+                Directory.CreateDirectory(diretorioTmpBackup);
+
             var arqDproj = rbSelecionado + ".dproj";
 
             var origemDproj = Path.Combine(diretorioFiltrado, arqDproj);
             var destinoDprojTmp = Path.Combine(diretorioTmp, arqDproj);
+            var destinoDprojBackup = Path.Combine(diretorioTmpBackup, arqDproj);
+            caminhoOrigemDproj = origemDproj;
+            caminhoTmpDproj = destinoDprojBackup;
+            caminhoTmp2 = diretorioTmpBackup;
 
             File.Copy(origemDproj, destinoDprojTmp, true);
+
+            if (!File.Exists(caminhoTmpDproj))
+                File.Copy(origemDproj, destinoDprojBackup, false);
 
             using (StreamReader lendo = new StreamReader(origemDproj))
             {
@@ -487,7 +525,7 @@ namespace Baiana20
             int linha = 0;
             string line;
 
-            var arqBat = "Baiana20.bat";
+            var arqBat = "Baiana.bat";
             var diretorioBat = new DirectoryInfo(Directory.GetCurrentDirectory());
             var diretorioTmp = Path.Combine(diretorioBat.ToString(), "tmp");
 
@@ -560,7 +598,6 @@ namespace Baiana20
                 else
                 {
                     MensagemProcesso(String.Format("Falha ao compilar {0} para Operadora {1}!", rbSelecionado + ".dll", operadora), Color.Red);
-
                     gerouErro = 2;
                     pbProgresso.Color = Brushes.Yellow;
                     pbProgresso.Step = 1;
@@ -612,7 +649,8 @@ namespace Baiana20
                                     Copiar(aplicacoesSelecionadas);
 
                                     pbProgresso.PerformStep();
-                                    if (CbFecharTerminar.Checked)
+
+                                    if (CbFecharTerminar.Checked && gerouErro != 0)
                                         this.Close();
                                 }
                                 else
@@ -641,35 +679,27 @@ namespace Baiana20
                     }
                     catch (ArgumentNullException)
                     {
-                        boxLog.Controls.Owner.Text = eventoLog.ToString();
+                         MensagemProcesso(eventoLog.ToString(), Color.Red);
                     }
                 }
             }
             catch (ArgumentNullException)
             {
-                boxLog.Controls.Owner.Text = eventoLog.ToString();
+                MensagemProcesso(eventoLog.ToString(), Color.Red);
                 throw;
             }
-
-        }
-
-        private static void RetornarOperadoraFiltrada(List<string> aplicacoesSelecionadas, List<string> aplicacoesSubversion,
-           List<string> aplicacoesSubversionFiltrada, List<string> aplicacoesBsversion, List<string> aplicacoesBsversionFiltrada)
-        {
-            foreach (var item in aplicacoesSelecionadas)
+            catch (UnauthorizedAccessException)
             {
-                var itemFiltradoVS = aplicacoesSubversion.First(x => x.Contains(item));
-                if (!string.IsNullOrEmpty(itemFiltradoVS))
-                    aplicacoesSubversionFiltrada.Add(itemFiltradoVS);
-
-                var itemFiltradoBS = aplicacoesBsversion.First(x => x.Contains(item));
-                if (!string.IsNullOrEmpty(itemFiltradoBS))
-                    aplicacoesBsversionFiltrada.Add(itemFiltradoBS);
+                MensagemProcesso("Usuário sem permissão de acesso, execute em modo administrador", Color.Red);
             }
+
         }
 
         private void Copiar(List<string> aplicacoesSelecionadas)
         {
+            Brush cor = Brushes.LimeGreen;
+            pbProgresso.Color = cor;
+
             DirectoryInfo DirVS = new DirectoryInfo(diretorioSubversion + "\\ESPECIFICOCLIENTES");
             DirectoryInfo DirBS = new DirectoryInfo(diretorioBsversion + "\\ESPECIFICOCLIENTES");
 
@@ -684,6 +714,7 @@ namespace Baiana20
             try
             {
                 var dllACopiar = ValorParametroSelecionado();
+                gerouErro = 0;
 
                 if (dllACopiar == String.Empty)
                 {
@@ -701,35 +732,56 @@ namespace Baiana20
                         foreach (var aplicacaoBsVersion in aplicacoesBsversionFiltrada)
                         {
                             var operadoraNoSub =
-                                aplicacaoSubVersion.Substring(aplicacaoSubVersion.IndexOf("ESPECIFICOCLIENTES\\"));
+                                aplicacaoSubVersion.Substring(aplicacaoSubVersion.IndexOf("\\ESPECIFICOCLIENTES\\"));
                             var operadoNoBs =
-                                aplicacaoBsVersion.Substring(aplicacaoSubVersion.IndexOf("ESPECIFICOCLIENTES\\"));
-                            if (operadoraNoSub.EndsWith(operadoNoBs))
+                                aplicacaoBsVersion.Substring(aplicacaoSubVersion.IndexOf("\\ESPECIFICOCLIENTES\\"));
+                            try
                             {
-                                var caminhoDllSV = aplicacaoSubVersion + "\\DLLS";
-                                var arquivoOrigem = Path.Combine(caminhoDllSV, dllACopiar + ".dll");
-                                var arquivoDestino = Path.Combine(aplicacaoBsVersion, dllACopiar.ToUpper() + ".dll");
+                                if (operadoraNoSub.EndsWith(operadoNoBs))
+                                {
+                                    var caminhoDllSV = aplicacaoSubVersion + "\\DLLS";
+                                    var arquivoOrigem = Path.Combine(caminhoDllSV, dllACopiar + ".dll");
+                                    var arquivoDestino = Path.Combine(aplicacaoBsVersion, dllACopiar.ToUpper() + ".dll");
 
-                                if (!File.Exists(arquivoOrigem))
-                                {
-                                    MensagemProcesso(String.Format("{0}.dll não existe na pasta de origem, tente compilar novamente. {1} para o caminho {2}!",
-                                     dllACopiar.ToUpper(), dllACopiar, caminhoDllSV), Color.Red);
-                                }
-                                else
-                                {
-                                    File.Copy(arquivoOrigem, arquivoDestino, true);
-                                    MensagemProcesso(String.Format("{0}.dll copiada com sucesso para o destino {1}!",
-                                        dllACopiar.ToUpper(), aplicacaoBsVersion), Color.Red);
+                                    if (!File.Exists(arquivoOrigem))
+                                    {
+                                        MensagemProcesso(String.Format("{0}.dll não existe na pasta de origem! Tente compilar novamente. {1}.dproj para o caminho {2}!",
+                                         dllACopiar.ToUpper(), dllACopiar, caminhoDllSV), Color.Red);
+                                        gerouErro = 2;
+                                    }
+                                    else
+                                    {
+                                        File.Copy(arquivoOrigem, arquivoDestino, true);
+                                        MensagemProcesso(String.Format("{0}.dll copiada com sucesso para o destino {1}!",
+                                            dllACopiar.ToUpper(), aplicacaoBsVersion), Color.Red);
+                                    }
                                 }
                             }
+                            catch (Exception)
+                            {
+                                MensagemProcesso(String.Format("Diretório {0} existe no BSVERSION, mas não existe no Subversion!",
+                                        operadoNoBs), Color.Red);
+                            }
+
                             boxLog.Controls.Owner.Text = eventoLog.ToString();
                         }
                     }
 
+                    if (gerouErro == 2)
+                    {
+                        MensagemProcesso("\r\nErro! Uma ou mais DLLS não foram copiadas!", Color.Red);
+                        cor = Brushes.Yellow;
+                    }
+                    else
+                    {
+                        MensagemProcesso("\r\nDLLS copiadas com sucesso!", Color.Blue);
+                    }
+
+                    pbProgresso.Color = cor;
                     pbProgresso.Maximum = 1;
                     pbProgresso.Minimum = 0;
                     pbProgresso.PerformStep();
-                    MensagemProcesso("\r\nDLLS copiadas com sucesso!", Color.Blue);
+
                     if (CbFecharTerminar.Checked)
                         this.Close();
                 }
@@ -747,5 +799,29 @@ namespace Baiana20
             }
         }
 
+        private void RetornarOperadoraFiltrada(List<string> aplicacoesSelecionadas, List<string> aplicacoesSubversion,
+          List<string> aplicacoesSubversionFiltrada, List<string> aplicacoesBsversion, List<string> aplicacoesBsversionFiltrada)
+        {
+            foreach (var item in aplicacoesSelecionadas)
+            {
+                try
+                {
+                    foreach (var apSubversion in aplicacoesSubversion)
+                    {
+                        if (apSubversion.ToUpper().Contains(item.ToUpper()))
+                            aplicacoesSubversionFiltrada.Add(apSubversion.ToUpper());
+                    }
+                    foreach (var apBsversion in aplicacoesBsversion)
+                    {
+                        if (apBsversion.ToUpper().Contains(item.ToUpper()))
+                            aplicacoesBsversionFiltrada.Add(apBsversion.ToUpper());
+                    }
+                }
+                catch (Exception)
+                {
+                    MensagemProcesso(String.Format("Aplicação {0} existe no SUBVERSION mas não existe no BSVERSION!!!", item), Color.Red);
+                }
+            }
+        }
     }
 }
