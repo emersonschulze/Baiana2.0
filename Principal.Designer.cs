@@ -30,13 +30,13 @@ namespace Baiana20
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Baiana20));
             this.BtnCompilar = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.RbSisAtualizacao = new System.Windows.Forms.RadioButton();
             this.RbSisVerificacao = new System.Windows.Forms.RadioButton();
             this.RbEspecifico = new System.Windows.Forms.RadioButton();
             this.RbBSWebService = new System.Windows.Forms.RadioButton();
-            this.PbProgresso = new System.Windows.Forms.ProgressBar();
             this.label2 = new System.Windows.Forms.Label();
             this.PathSubversion = new System.Windows.Forms.TextBox();
             this.PathBsversion = new System.Windows.Forms.TextBox();
@@ -119,14 +119,6 @@ namespace Baiana20
             this.RbBSWebService.Text = "BSWebService";
             this.RbBSWebService.UseVisualStyleBackColor = true;
             // 
-            // PbProgresso
-            // 
-            this.PbProgresso.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.PbProgresso.Location = new System.Drawing.Point(11, 331);
-            this.PbProgresso.Name = "PbProgresso";
-            this.PbProgresso.Size = new System.Drawing.Size(694, 23);
-            this.PbProgresso.TabIndex = 8;
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -166,7 +158,9 @@ namespace Baiana20
             // 
             // BtnCopiaDLLS
             // 
-            this.BtnCopiaDLLS.Location = new System.Drawing.Point(531, 67);
+            this.BtnCopiaDLLS.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.BtnCopiaDLLS.FlatAppearance.BorderColor = System.Drawing.Color.Blue;
+            this.BtnCopiaDLLS.Location = new System.Drawing.Point(531, 65);
             this.BtnCopiaDLLS.Name = "BtnCopiaDLLS";
             this.BtnCopiaDLLS.Size = new System.Drawing.Size(175, 23);
             this.BtnCopiaDLLS.TabIndex = 16;
@@ -214,7 +208,7 @@ namespace Baiana20
             this.LbMensagemAlerta.AutoSize = true;
             this.LbMensagemAlerta.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
             this.LbMensagemAlerta.ForeColor = System.Drawing.Color.Blue;
-            this.LbMensagemAlerta.Location = new System.Drawing.Point(282, 493);
+            this.LbMensagemAlerta.Location = new System.Drawing.Point(252, 493);
             this.LbMensagemAlerta.Name = "LbMensagemAlerta";
             this.LbMensagemAlerta.Size = new System.Drawing.Size(0, 13);
             this.LbMensagemAlerta.TabIndex = 22;
@@ -246,20 +240,17 @@ namespace Baiana20
             this.boxLog.Location = new System.Drawing.Point(11, 360);
             this.boxLog.Multiline = true;
             this.boxLog.Name = "boxLog";
-            this.boxLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.boxLog.Size = new System.Drawing.Size(694, 130);
+            this.boxLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.boxLog.Size = new System.Drawing.Size(698, 130);
             this.boxLog.TabIndex = 27;
             // 
             // Baiana20
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
-            this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(717, 509);
+            this.ClientSize = new System.Drawing.Size(721, 524);
             this.Controls.Add(this.boxLog);
-            this.Controls.Add(this.PbProgresso);
             this.Controls.Add(this.CbFecharTerminar);
             this.Controls.Add(this.CbCompilarTodos);
             this.Controls.Add(this.label3);
@@ -277,6 +268,7 @@ namespace Baiana20
             this.Controls.Add(this.RbSisAtualizacao);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.BtnCompilar);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Baiana20";
             this.RightToLeftLayout = true;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -294,7 +286,6 @@ namespace Baiana20
         private System.Windows.Forms.RadioButton RbSisVerificacao;
         private System.Windows.Forms.RadioButton RbEspecifico;
         private System.Windows.Forms.RadioButton RbBSWebService;
-        private System.Windows.Forms.ProgressBar PbProgresso;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox PathSubversion;
         private System.Windows.Forms.TextBox PathBsversion;
