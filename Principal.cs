@@ -92,31 +92,37 @@ namespace Baiana20
 
         private void BtnSalvarDiretorios_Click(object sender, EventArgs e)
         {
-            var currentDirectory = Application.StartupPath.Replace("\\bin\\Debug", "\\");
-            var configuracao = new Configuracoes();
-            configuracao.DiretorioSubversion = PathSubversion.Text;
-            configuracao.DiretorioBsversion = PathBsversion.Text;
-            configuracao.FecharTerminar = CbFecharTerminar.Checked;
-            configuracao.CompilarTodos = CbCompilarTodos.Checked;
-
-            var configurationFile = currentDirectory + "\\configuracoes.xml";
-            if (File.Exists(configurationFile))
+            try
             {
-                File.Delete(configurationFile);
-                File.CreateText(configurationFile).Close();
-            }
+                var currentDirectory = Application.StartupPath.Replace("\\bin\\Debug", "\\");
+                var configuracao = new Configuracoes();
+                configuracao.DiretorioSubversion = PathSubversion.Text;
+                configuracao.DiretorioBsversion = PathBsversion.Text;
+                configuracao.FecharTerminar = CbFecharTerminar.Checked;
+                configuracao.CompilarTodos = CbCompilarTodos.Checked;
 
-            XmlSerializer writer = new XmlSerializer(typeof(Configuracoes));
-            using (FileStream file = File.OpenWrite(configurationFile))
+                var configurationFile = currentDirectory + "\\configuracoes.xml";
+                if (File.Exists(configurationFile))
+                {
+                    File.Delete(configurationFile);
+                    File.CreateText(configurationFile).Close();
+                }
+
+                XmlSerializer writer = new XmlSerializer(typeof(Configuracoes));
+                using (FileStream file = File.OpenWrite(configurationFile))
+                {
+                    writer.Serialize(file, configuracao);
+                    file.Flush();
+                }
+                LbMensagemAlerta.Text = "Diretórios salvos!";
+
+                diretorioBsversion = PathBsversion.Text;
+                diretorioSubversion = PathSubversion.Text;
+            }
+            catch (UnauthorizedAccessException)
             {
-                writer.Serialize(file, configuracao);
-                file.Flush();
+                MensagemProcesso("Usuário sem permissão de acesso, execute em modo administrador", Color.Red);
             }
-            LbMensagemAlerta.Text = "Diretórios salvos!";
-
-            diretorioBsversion = PathBsversion.Text;
-            diretorioSubversion = PathSubversion.Text;
-
         }
 
         private void MensagemProcesso(string mensagem, Color corTexto)

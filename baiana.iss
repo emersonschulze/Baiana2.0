@@ -31,7 +31,9 @@ SolidCompression=yes
 Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "E:\Baiana\Baiana 2.0\Código Fonte\Baiana2.0.ico"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+
 
 [Files]
 Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.exe"; DestDir: "{app}"; Flags: ignoreversion
@@ -46,11 +48,12 @@ Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.vshost.exe.conf
 Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.vshost.exe.manifest"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\configuracoes.xml"; DestDir: "{app}"; Flags: ignoreversion
 Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Microsoft.Office.InfoPath.Permission.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Baiana\Baiana 2.0\Código Fonte\Baiana2.0.ico" ; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{commonprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{commonprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename:"{app}\Baiana2.0.ico"; IconIndex: 0; Comment: Compilador de Dlls Delphi; 
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename:"{app}\Baiana2.0.ico"; IconIndex: 0; Comment: Compilador de Dlls Delphi;  Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent

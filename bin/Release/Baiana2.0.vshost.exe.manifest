@@ -49,7 +49,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>7msTuSldAaNK0yucSeheOItLtUoHIiek2XySwVkGx5E=</dsig:DigestValue>
+        <dsig:DigestValue>qlCz9IqdqwBvD4uhC8VeeguvrqZ2Ma4Lyp0uKhidVQ8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -83,13 +83,13 @@
       <dsig:DigestValue>xm4bo26HQ0LNVwz1vdPYtzhkpMnp2AI5i+f0b+OahTI=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="Baiana2.0.ico" size="1575834">
+  <file name="Baiana2.0.ico" size="190929">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>WRUacj1BGtSnxXPzPyHcacPHtvHJwewuoesAPnOwtQM=</dsig:DigestValue>
+      <dsig:DigestValue>cU/CE5KxjwYxcGgF2fDp92xBQEPcUavAvoSuxGexeeU=</dsig:DigestValue>
     </hash>
   </file>
   <file name="configuracoes.xml" size="349" writeableType="applicationData">
