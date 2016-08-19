@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Baiana 2.0"
-#define MyAppVersion "1.0"
+#define MyAppVersion "2.0.1"
 #define MyAppPublisher "Benner Maringá"
 #define MyAppURL "http://www.benner.com.br"
 #define MyAppExeName "Baiana2.0.exe"
@@ -31,7 +31,7 @@ SolidCompression=yes
 Name: "brazilianportuguese"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "E:\Baiana\Baiana 2.0\Código Fonte\Baiana2.0.ico"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
 Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.exe"; DestDir: "{app}"; Flags: ignoreversion

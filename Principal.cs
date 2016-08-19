@@ -5,7 +5,9 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -195,7 +197,9 @@ namespace Baiana20
 
         private void PathSubversion_TextChanged(object sender, EventArgs e)
         {
+            diretorioSubversion = PathSubversion.Text;
             ValidarBtnCopiar();
+
             var caminhoSubversion = PathSubversion.Text;
 
             var aplicacoesDisponiveis = DetectarAplicacoesDisponiveis(caminhoSubversion);
@@ -211,6 +215,7 @@ namespace Baiana20
 
         private void PathBsversion_TextChanged(object sender, EventArgs e)
         {
+            diretorioBsversion = PathBsversion.Text;
             ValidarBtnCopiar();
         }
 
@@ -223,17 +228,39 @@ namespace Baiana20
             return aplicacoesDisponiveis.ToList();
         }
 
-        private static List<string> EncontrarAplicacoes(string caminho)
+        private List<string> EncontrarAplicacoes(string caminho)
         {
+
             var aplicacoes = new List<string>();
             if (Directory.Exists(caminho))
             {
+                DirectoryInfo Dir = null;
+
                 var subDiretoriosSubversion =
                     Directory.GetDirectories(caminho).Where(x => x.Contains("ESPECIFICOCLIENTES"));
                 if (subDiretoriosSubversion.Any())
                 {
-                    DirectoryInfo Dir = new DirectoryInfo(caminho + "\\Delphi\\ESPECIFICOCLIENTES");
-                    DirectoryInfo[] Files = Dir.GetDirectories();
+                    DirectoryInfo[] Files = new DirectoryInfo[] { };
+
+                    if (diretorioSubversion.Contains("Corrente"))
+                    {
+                        Dir = new DirectoryInfo(caminho + "\\Delphi\\ESPECIFICOCLIENTES");
+                        Files = Dir.GetDirectories();
+                    }
+                    else
+                    {
+                        var versao = Regex.Match(diretorioSubversion, @"\b\d\d");
+                        if (Convert.ToInt32(versao.Value) > 42)
+                        {
+                            Dir = new DirectoryInfo(caminho + "\\Delphi\\ESPECIFICOCLIENTES");
+                            Files = Dir.GetDirectories();
+                        }
+                        else
+                        {
+                            Dir = new DirectoryInfo(caminho + "\\ESPECIFICOCLIENTES");
+                            Files = Dir.GetDirectories();
+                        }
+                    }
 
                     foreach (DirectoryInfo item in Files)
                     {
@@ -259,20 +286,20 @@ namespace Baiana20
         {
             CheckBox box;
             int innitialOffset = 25;
-            int xDistance = 150;
+            int xDistance = 140;
             int yDistance = 30;
 
             for (int i = 0; i < aplicacoesDisponiveis.Count; i++)
             {
 
-                box = new CheckBox { Padding = new Padding { Top = 90 } };
+                box = new CheckBox { Padding = new Padding { Top = 2 } };
                 box.Name = "CheckBox";
                 box.Tag = aplicacoesDisponiveis[i];
                 box.Text = aplicacoesDisponiveis[i];
                 box.AutoSize = true;
-                box.Location = new Point(innitialOffset + i % 4 * xDistance, innitialOffset + i / 4 * yDistance);
+                box.Location = new Point(innitialOffset + i % 5 * xDistance, innitialOffset + i / 5 * yDistance);
 
-                this.Controls.Add(box);
+                this.gBOperadoras.Controls.Add(box);
             }
         }
 
@@ -280,12 +307,12 @@ namespace Baiana20
         {
             for (int i = 0; i < 10; i++)
             {
-                foreach (Control c in this.Controls)
+                foreach (Control c in this.gBOperadoras.Controls)
                 {
                     if (c.GetType().Name == "CheckBox")
                     {
                         if (((CheckBox)c).Text != "Compilar Todos" && ((CheckBox)c).Text != "Fechar ao Terminar")
-                            this.Controls.Remove(c);
+                            this.gBOperadoras.Controls.Remove(c);
                     }
                 }
             }
@@ -294,7 +321,7 @@ namespace Baiana20
         private List<string> DetectarAplicacoesSelecionadas()
         {
             List<string> resultados = new List<string>();
-            foreach (Control c in this.Controls)
+            foreach (Control c in this.gBOperadoras.Controls)
             {
                 if (c.GetType().Name == "CheckBox")
                 {
@@ -319,7 +346,7 @@ namespace Baiana20
         {
             if (CbCompilarTodos.Checked == true)
             {
-                foreach (Control c in this.Controls)
+                foreach (Control c in this.gBOperadoras.Controls)
                 {
                     if (c.GetType().Name == "CheckBox")
                     {
@@ -332,7 +359,7 @@ namespace Baiana20
             }
             else
             {
-                foreach (Control c in this.Controls)
+                foreach (Control c in this.gBOperadoras.Controls)
                 {
                     if (c.GetType().Name == "CheckBox")
                     {
@@ -345,10 +372,9 @@ namespace Baiana20
 
         private void BtnCompilar_Click(object sender, EventArgs e)
         {
+            gerouErro = 0;
             try
             {
-
-
                 if (!ValidarDiretoriosSelecionados())
                 {
                     MensagemProcesso("Diretório invalido detectado, por favor revise os caminhos selecionados!", Color.Red);
@@ -364,11 +390,27 @@ namespace Baiana20
                     pbProgresso.Value = 0;
 
                     DirectoryInfo DirDll = new DirectoryInfo(PathSubversion.Text + "\\ESPECIFICOCLIENTES");
-                    DirectoryInfo DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
+                    DirectoryInfo DirDproj;
+
+                    if (PathSubversion.Text.Contains("Corrente"))
+                    {
+                        DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
+                    }
+                    else
+                    {
+                        var versao = Regex.Match(diretorioSubversion, @"\b\d\d");
+                        if (Convert.ToInt32(versao.Value) > 42)
+                        {
+                            DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
+                        }
+                        else
+                        {
+                            DirDproj = new DirectoryInfo(PathSubversion.Text + "\\");
+                        }
+                    }
 
                     var caminhoDllOperadora = Directory.GetDirectories(DirDll.ToString()).ToList();
                     var diretorioACompilar = Directory.GetDirectories(DirDproj.ToString()).ToList();
-
 
                     MensagemProcesso("Compilando dproj da(s) operadora(s) selecionada(s)...\r\n", Color.Blue);
                     pbProgresso.Visible = true;
@@ -381,7 +423,7 @@ namespace Baiana20
                     {
                         if (ValorParametroSelecionado().Any())
                         {
-                            var diretorioFiltrado = diretorioACompilar.First(x => x.Contains(rbSelecionado.ToUpper()));
+                            var diretorioFiltrado = diretorioACompilar.Find(x => x.Contains(rbSelecionado.ToUpper()) && !x.Contains("."));
 
                             pbProgresso.Maximum = aplicacoesSelecionadas.Count;
 
@@ -487,7 +529,22 @@ namespace Baiana20
                         {
                             if (line.Contains("<DCC_ExeOutput>..\\"))
                             {
-                                line = String.Format(@"<DCC_ExeOutput>..\..\ESPECIFICOCLIENTES\{0}\DLLS\</DCC_ExeOutput>", operadora);
+                                if (PathSubversion.Text.Contains("Corrente"))
+                                {
+                                    line = String.Format(@"<DCC_ExeOutput>..\..\ESPECIFICOCLIENTES\{0}\DLLS\</DCC_ExeOutput>", operadora);
+                                }
+                                else
+                                {
+                                    var versao = Regex.Match(diretorioSubversion, @"\b\d\d");
+                                    if (Convert.ToInt32(versao.Value) > 42)
+                                    {
+                                        line = String.Format(@"<DCC_ExeOutput>..\..\ESPECIFICOCLIENTES\{0}\DLLS\</DCC_ExeOutput>", operadora);
+                                    }
+                                    else
+                                    {
+                                        line = String.Format(@"<DCC_ExeOutput>..\ESPECIFICOCLIENTES\{0}\DLLS\</DCC_ExeOutput>", operadora);
+                                    }
+                                }
                             }
                             else if (line.Contains("$(DCC_UnitSearchPath"))
                             {
@@ -650,7 +707,7 @@ namespace Baiana20
 
                                     pbProgresso.PerformStep();
 
-                                    if (CbFecharTerminar.Checked && gerouErro != 0)
+                                    if (CbFecharTerminar.Checked && gerouErro == 0)
                                         this.Close();
                                 }
                                 else
@@ -679,7 +736,7 @@ namespace Baiana20
                     }
                     catch (ArgumentNullException)
                     {
-                         MensagemProcesso(eventoLog.ToString(), Color.Red);
+                        MensagemProcesso(eventoLog.ToString(), Color.Red);
                     }
                 }
             }
@@ -782,7 +839,7 @@ namespace Baiana20
                     pbProgresso.Minimum = 0;
                     pbProgresso.PerformStep();
 
-                    if (CbFecharTerminar.Checked)
+                    if (CbFecharTerminar.Checked && gerouErro == 0)
                         this.Close();
                 }
             }
@@ -811,15 +868,23 @@ namespace Baiana20
                         if (apSubversion.ToUpper().Contains(item.ToUpper()))
                             aplicacoesSubversionFiltrada.Add(apSubversion.ToUpper());
                     }
-                    foreach (var apBsversion in aplicacoesBsversion)
+                    if (aplicacoesBsversion.Any())
                     {
-                        if (apBsversion.ToUpper().Contains(item.ToUpper()))
-                            aplicacoesBsversionFiltrada.Add(apBsversion.ToUpper());
+                        foreach (var apBsversion in aplicacoesBsversion)
+                        {
+                            if (apBsversion.ToUpper().Contains(item.ToUpper()))
+                                aplicacoesBsversionFiltrada.Add(apBsversion.ToUpper());
+                        }
+                    }
+                    else
+                    {
+                        gerouErro = 2;
+                        new Exception(); MensagemProcesso(String.Format("O diretório da aplicação {0} existe no SUBVERSION mas não existe no BSVERSION!!!", item), Color.Red);
                     }
                 }
                 catch (Exception)
                 {
-                    MensagemProcesso(String.Format("Aplicação {0} existe no SUBVERSION mas não existe no BSVERSION!!!", item), Color.Red);
+                    MensagemProcesso(String.Format("O diretório da aplicação {0} existe no SUBVERSION mas não existe no BSVERSION!!!", item), Color.Red);
                 }
             }
         }
