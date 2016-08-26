@@ -9,6 +9,11 @@ namespace Baiana20
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+        public SelecionaPasta SelecionarPasta1
+        {
+            get { return _selecionarPasta; }
+        }
+
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -370,10 +375,10 @@ namespace Baiana20
 
         private System.Windows.Forms.Button BtnCompilar;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.RadioButton RbSisAtualizacao;
-        private System.Windows.Forms.RadioButton RbSisVerificacao;
-        private System.Windows.Forms.RadioButton RbEspecifico;
-        private System.Windows.Forms.RadioButton RbBSWebService;
+        public System.Windows.Forms.RadioButton RbSisAtualizacao;
+        public System.Windows.Forms.RadioButton RbSisVerificacao;
+        public System.Windows.Forms.RadioButton RbEspecifico;
+        public System.Windows.Forms.RadioButton RbBSWebService;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox PathSubversion;
         private System.Windows.Forms.TextBox PathBsversion;
@@ -394,6 +399,7 @@ namespace Baiana20
         private TableLayoutPanel tableLayoutPanel1;
         private GroupBox gBOperadoras;
         private Label lbVersao;
+        private readonly SelecionaPasta _selecionarPasta = new SelecionaPasta();
     }
 }
 

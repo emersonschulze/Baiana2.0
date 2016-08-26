@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -21,12 +22,14 @@ namespace Baiana20
         private string caminhoOrigemDproj;
         private string caminhoTmpDproj;
         private string caminhoTmp2;
+        private SelecionaPasta selecionaPasta = new SelecionaPasta();
 
         private List<string> eventoLog = new List<string>();
 
         BarraDeProgresso pbProgresso = new BarraDeProgresso();
         public Baiana20()
         {
+
             InitializeComponent();
             CarregarPredefinicoes();
 
@@ -64,31 +67,17 @@ namespace Baiana20
             CbFecharTerminar.Enabled = false;
         }
 
-        #region Selecionar o caminho
+        #region Botão o caminho
 
         private void BtnSubversion_Click(object sender, EventArgs e)
         {
-            PathSubversion.Text = SelecionarPasta(diretorioSubversion);
+            PathSubversion.Text = selecionaPasta.SelecionarPasta(diretorioSubversion);
         }
 
         private void BtnBsversion_Click(object sender, EventArgs e)
         {
-            PathBsversion.Text = SelecionarPasta(diretorioBsversion);
+            PathBsversion.Text = selecionaPasta.SelecionarPasta(diretorioBsversion);
         }
-
-        private string SelecionarPasta(string diretorio)
-        {
-            var dialog = new FolderBrowserDialog();
-            dialog.ShowNewFolderButton = false;
-            DialogResult resultado = dialog.ShowDialog();
-            if (resultado == DialogResult.OK)
-            {
-                return dialog.SelectedPath;
-            }
-            return diretorio;
-        }
-
-        #endregion
 
         private void BtnSalvarDiretorios_Click(object sender, EventArgs e)
         {
@@ -125,6 +114,9 @@ namespace Baiana20
             }
         }
 
+        #endregion
+
+       
         private void MensagemProcesso(string mensagem, Color corTexto)
         {
             LbMensagemAlerta.Text = mensagem;
@@ -139,28 +131,30 @@ namespace Baiana20
 
         private string ValorParametroSelecionado()
         {
-            var especifico = RbEspecifico;
-
-            var sisAtualizacao = RbSisAtualizacao;
-            var sisVerificacao = RbSisVerificacao;
-            var bsWebService = RbBSWebService;
             var selecionado = String.Empty;
+            IEnumerable<RadioButton> buttons = Controls.OfType<RadioButton>() ;
 
-            if (especifico.Checked == true)
+            foreach (var dll in buttons)
             {
-                selecionado = "Especifico";
-            }
-            else if (sisAtualizacao.Checked == true)
-            {
-                selecionado = "Sisatualizacao";
-            }
-            else if (sisVerificacao.Checked == true)
-            {
-                selecionado = "Sisverificacao";
-            }
-            else if (bsWebService.Checked == true)
-            {
-                selecionado = "Bswebservice";
+                if (dll.Checked)
+                {
+                   var text = dll.Text;
+                    switch (text)
+                    {
+                        case "Específico":
+                            selecionado = "Especifico";
+                            break;
+                        case "SisAtualização":
+                            selecionado = "SisAtualizacaoEspec";
+                            break;
+                        case "SisVerificação":
+                            selecionado = "SisVerificacaoEspec";
+                            break;
+                        case "BSWebService":
+                            selecionado = "Bswebservice";
+                            break; 
+                    }
+                }
             }
 
             return selecionado;
@@ -508,8 +502,16 @@ namespace Baiana20
             if (!Directory.Exists(diretorioTmpBackup))
                 Directory.CreateDirectory(diretorioTmpBackup);
 
-            var arqDproj = rbSelecionado + ".dproj";
-
+            string arqDproj;
+            if (rbSelecionado.Equals("SisAtualizacaoEspec"))
+            {
+                arqDproj = "SisAtualizacaEspec.dproj"; 
+            }
+            else
+            {
+                arqDproj = rbSelecionado + ".dproj";      
+            }
+            
             var origemDproj = Path.Combine(diretorioFiltrado, arqDproj);
             var destinoDprojTmp = Path.Combine(diretorioTmp, arqDproj);
             var destinoDprojBackup = Path.Combine(diretorioTmpBackup, arqDproj);
@@ -608,7 +610,11 @@ namespace Baiana20
                     {
                         if (line.StartsWith("MSBuild"))
                         {
+                            if (rbSelecionado.Equals("SisAtualizacaoEspec"))
+                                rbSelecionado = "SisAtualizacaEspec";
+
                             var caminhoProjeto = aplicacao + "\\" + rbSelecionado;
+
                             line = line.Replace("[CAMINHO][PROJETO]", caminhoProjeto + ".dproj").Replace("[ERRORSLOG]", aplicacao + "\\" + "saida.txt");
                         }
 
@@ -777,6 +783,8 @@ namespace Baiana20
             try
             {
                 var dllACopiar = ValorParametroSelecionado();
+                if (dllACopiar.Equals("SisAtualizacaoEspec"))
+                    dllACopiar = "SisAtualizacaEspec";
                 gerouErro = 0;
 
                 if (dllACopiar == String.Empty)

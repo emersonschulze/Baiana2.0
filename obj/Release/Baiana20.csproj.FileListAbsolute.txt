@@ -13,3 +13,17 @@ E:\Baiana\Baiana 2.0\Código Fonte\obj\Release\Baiana2.0.application
 E:\Baiana\Baiana 2.0\Código Fonte\obj\Release\Baiana2.0.exe
 E:\Baiana\Baiana 2.0\Código Fonte\obj\Release\Baiana2.0.pdb
 E:\Baiana\Baiana 2.0\Código Fonte\obj\Release\Baiana20.csprojResolveAssemblyReference.cache
+E:\Baiana2.0\bin\Release\Baiana2.0.exe.config
+E:\Baiana2.0\bin\Release\Baiana2.0.exe.manifest
+E:\Baiana2.0\bin\Release\Baiana2.0.application
+E:\Baiana2.0\bin\Release\Baiana2.0.exe
+E:\Baiana2.0\bin\Release\Baiana2.0.pdb
+E:\Baiana2.0\bin\Release\Microsoft.Office.InfoPath.Permission.dll
+E:\Baiana2.0\obj\Release\Baiana20.Baiana20.resources
+E:\Baiana2.0\obj\Release\Baiana20.Properties.Resources.resources
+E:\Baiana2.0\obj\Release\Baiana20.csproj.GenerateResource.Cache
+E:\Baiana2.0\obj\Release\Baiana2.0.TrustInfo.xml
+E:\Baiana2.0\obj\Release\Baiana2.0.exe.manifest
+E:\Baiana2.0\obj\Release\Baiana2.0.application
+E:\Baiana2.0\obj\Release\Baiana2.0.exe
+E:\Baiana2.0\obj\Release\Baiana2.0.pdb
