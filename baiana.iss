@@ -23,7 +23,7 @@ DefaultDirName={pf}\{#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=C:\Users\emerson.schulze\Desktop\Baiana 2.0
 OutputBaseFilename=Install
-SetupIconFile=E:\Baiana\Baiana 2.0\Código Fonte\Baiana_Icon.ico
+SetupIconFile=E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\Baiana_Icon.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -36,19 +36,19 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 
 [Files]
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana.bat"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.application"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.exe.manifest"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.pdb"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.vshost.application"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.vshost.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.vshost.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Baiana2.0.vshost.exe.manifest"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\configuracoes.xml"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\bin\Release\Microsoft.Office.InfoPath.Permission.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "E:\Baiana\Baiana 2.0\Código Fonte\Baiana2.0.ico" ; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.application"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.exe.manifest"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.vshost.application"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.vshost.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.vshost.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.vshost.exe.manifest"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\configuracoes.xml"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Microsoft.Office.InfoPath.Permission.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\Baiana2.0.ico" ; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

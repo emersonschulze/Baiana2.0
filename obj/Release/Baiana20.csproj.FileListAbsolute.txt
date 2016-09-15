@@ -27,3 +27,17 @@ E:\Baiana2.0\obj\Release\Baiana2.0.exe.manifest
 E:\Baiana2.0\obj\Release\Baiana2.0.application
 E:\Baiana2.0\obj\Release\Baiana2.0.exe
 E:\Baiana2.0\obj\Release\Baiana2.0.pdb
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.exe.config
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.exe.manifest
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.application
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.exe
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Baiana2.0.pdb
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\bin\Release\Microsoft.Office.InfoPath.Permission.dll
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana20.Baiana20.resources
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana20.Properties.Resources.resources
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana20.csproj.GenerateResource.Cache
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana2.0.TrustInfo.xml
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana2.0.exe.manifest
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana2.0.application
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana2.0.exe
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana2.0.pdb

@@ -8,8 +8,11 @@ namespace Baiana20
         {
             var dialog = new FolderBrowserDialog();
             dialog.ShowNewFolderButton = false;
+            
+            dialog.SelectedPath = diretorio;
             DialogResult resultado = dialog.ShowDialog();
             
+
             if (resultado == DialogResult.OK)
             {
                 return dialog.SelectedPath;

@@ -72,11 +72,13 @@ namespace Baiana20
         private void BtnSubversion_Click(object sender, EventArgs e)
         {
             PathSubversion.Text = selecionaPasta.SelecionarPasta(diretorioSubversion);
+            PathSubversion.Text = diretorioSubversion;
         }
 
         private void BtnBsversion_Click(object sender, EventArgs e)
         {
             PathBsversion.Text = selecionaPasta.SelecionarPasta(diretorioBsversion);
+            PathBsversion.Text = diretorioBsversion;
         }
 
         private void BtnSalvarDiretorios_Click(object sender, EventArgs e)
@@ -116,7 +118,7 @@ namespace Baiana20
 
         #endregion
 
-       
+
         private void MensagemProcesso(string mensagem, Color corTexto)
         {
             LbMensagemAlerta.Text = mensagem;
@@ -132,13 +134,13 @@ namespace Baiana20
         private string ValorParametroSelecionado()
         {
             var selecionado = String.Empty;
-            IEnumerable<RadioButton> buttons = Controls.OfType<RadioButton>() ;
+            IEnumerable<RadioButton> buttons = Controls.OfType<RadioButton>();
 
             foreach (var dll in buttons)
             {
                 if (dll.Checked)
                 {
-                   var text = dll.Text;
+                    var text = dll.Text;
                     switch (text)
                     {
                         case "Específico":
@@ -152,7 +154,7 @@ namespace Baiana20
                             break;
                         case "BSWebService":
                             selecionado = "Bswebservice";
-                            break; 
+                            break;
                     }
                 }
             }
@@ -431,15 +433,25 @@ namespace Baiana20
                             {
                                 foreach (var operadoraSelecionada in aplicacoesSelecionadas)
                                 {
-                                    var dirDllOperadora = caminhoDllOperadora.First(x => x.Contains(operadoraSelecionada));
-                                    var contemPastaDLLL = Path.Combine(dirDllOperadora + "\\DLLS");
+                                    try
+                                    {
+                                        var dirDllOperadora = caminhoDllOperadora.First(x => x.Contains(operadoraSelecionada));
+                                        var contemPastaDLLL = Path.Combine(dirDllOperadora + "\\DLLS");
 
-                                    if (!Directory.Exists(contemPastaDLLL))
-                                        Directory.CreateDirectory(contemPastaDLLL);
+                                        if (!Directory.Exists(contemPastaDLLL))
+                                            Directory.CreateDirectory(contemPastaDLLL);
 
-                                    AlterarParaReleaseEAlterarOutputDproj(operadoraSelecionada, rbSelecionado, diretorioFiltrado);
-                                    AlterarBatEProcessar(rbSelecionado, diretorioFiltrado, operadoraSelecionada, aplicacoesSelecionadas.Count);
-
+                                        AlterarParaReleaseEAlterarOutputDproj(operadoraSelecionada, rbSelecionado, diretorioFiltrado);
+                                        AlterarBatEProcessar(rbSelecionado, diretorioFiltrado, operadoraSelecionada, aplicacoesSelecionadas.Count);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        gerouErro = aplicacoesSelecionadas.Count > 1 ? 2 : 1;
+                                        pbProgresso.Color = aplicacoesSelecionadas.Count > 1 ? Brushes.Yellow : Brushes.Red;
+                                        
+                                        MensagemProcesso(String.Format("Não existe a pasta {0}, no caminho {1}\\ESPECIFICOCLIENTE" , operadoraSelecionada, diretorioSubversion), Color.Red);
+                                        new ArgumentNullException();
+                                    }
                                 }
 
                                 if (gerouErro == 0)
@@ -458,13 +470,26 @@ namespace Baiana20
                                 }
                             }
 
-                            File.Copy(caminhoTmpDproj, caminhoOrigemDproj, true);
-                            File.Delete(caminhoTmpDproj);
-                            Directory.Delete(caminhoTmp2);
+                            if (string.IsNullOrEmpty(caminhoTmpDproj) || string.IsNullOrEmpty(caminhoTmp2))
+                            {
+                                MensagemProcesso("Algumas DLL podem não ter sido compilada", Color.Red);
+                                gerouErro = 2;
+                                pbProgresso.Color = cor;
+                                pbProgresso.PerformStep();
+                            }
+                            else
+                            {
+                                File.Copy(caminhoTmpDproj, caminhoOrigemDproj, true);
+                                File.Delete(caminhoTmpDproj);
+                                Directory.Delete(caminhoTmp2);
 
-                            pbProgresso.Color = cor;
-                            pbProgresso.PerformStep();
-                            DesabilitaHabilitarOpcoesAposCompilar();
+                                caminhoTmpDproj = String.Empty;
+                                caminhoTmp2 = String.Empty;
+                                pbProgresso.Color = cor;
+                                pbProgresso.PerformStep();
+                                DesabilitaHabilitarOpcoesAposCompilar(); 
+                            }
+                            
                         }
                         else
                         {
@@ -483,6 +508,10 @@ namespace Baiana20
             catch (UnauthorizedAccessException)
             {
                 MensagemProcesso("Usuário sem permissão de acesso, execute em modo administrador", Color.Red);
+            }
+            catch (ArgumentNullException)
+            {
+                MensagemProcesso("\r\n Observe o log para maiores detalhes! \r\n Revise os caminhos e verifique se as pastas existem nos locais corretos! Abra o aplicativo novamente.", Color.Red);
             }
         }
 
@@ -505,13 +534,13 @@ namespace Baiana20
             string arqDproj;
             if (rbSelecionado.Equals("SisAtualizacaoEspec"))
             {
-                arqDproj = "SisAtualizacaEspec.dproj"; 
+                arqDproj = "SisAtualizacaEspec.dproj";
             }
             else
             {
-                arqDproj = rbSelecionado + ".dproj";      
+                arqDproj = rbSelecionado + ".dproj";
             }
-            
+
             var origemDproj = Path.Combine(diretorioFiltrado, arqDproj);
             var destinoDprojTmp = Path.Combine(diretorioTmp, arqDproj);
             var destinoDprojBackup = Path.Combine(diretorioTmpBackup, arqDproj);
