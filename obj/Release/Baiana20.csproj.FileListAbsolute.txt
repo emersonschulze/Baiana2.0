@@ -41,3 +41,4 @@ E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana2.0.ex
 E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana2.0.application
 E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana2.0.exe
 E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana2.0.pdb
+E:\Subversion\Utilitarios\Trunk\Baiana2.0\Código Fonte\obj\Release\Baiana20.csprojResolveAssemblyReference.cache

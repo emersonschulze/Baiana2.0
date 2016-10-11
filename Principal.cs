@@ -23,6 +23,8 @@ namespace Baiana20
         private string caminhoTmpDproj;
         private string caminhoTmp2;
         private SelecionaPasta selecionaPasta = new SelecionaPasta();
+        private bool PossuiPastaDelphi = false;
+        private bool VersaoSup42 = false;
 
         private List<string> eventoLog = new List<string>();
 
@@ -162,7 +164,25 @@ namespace Baiana20
             return selecionado;
         }
 
-        private bool ValidarDiretoriosSelecionados()
+        private bool ValidarDiretoriosSubversion()
+        {
+            bool valido = false;
+
+            if (!Directory.Exists(diretorioSubversion))
+                return false;
+
+            var subDiretoriosSubVersion = Directory.GetDirectories(diretorioSubversion);
+            var contemPastasSV = subDiretoriosSubVersion.Any(x => x.Contains("ESPECIFICOCLIENTES"));
+
+            if (contemPastasSV)
+                valido = true;
+            else
+                return false;
+
+            return valido;
+        }
+
+        private bool ValidarDiretoriosBsversion()
         {
             bool valido = false;
 
@@ -189,7 +209,7 @@ namespace Baiana20
         private void ValidarBtnCopiar()
         {
             BtnSalvarDiretorios.Enabled = false;
-            if (!string.IsNullOrEmpty(PathSubversion.Text) && !string.IsNullOrEmpty(PathBsversion.Text))
+            if (!string.IsNullOrEmpty(PathBsversion.Text))
             {
                 BtnCopiaDLLS.Enabled = false;
                 BtnSalvarDiretorios.Enabled = true;
@@ -200,7 +220,6 @@ namespace Baiana20
         private void PathSubversion_TextChanged(object sender, EventArgs e)
         {
             diretorioSubversion = PathSubversion.Text;
-            ValidarBtnCopiar();
 
             var caminhoSubversion = PathSubversion.Text;
 
@@ -244,24 +263,21 @@ namespace Baiana20
                 {
                     DirectoryInfo[] Files = new DirectoryInfo[] { };
 
-                    if (diretorioSubversion.Contains("Corrente"))
+                    var contemPasta = Directory.GetDirectories(caminho);
+                    var existePasta = contemPasta.Any(x => x.Contains("Delphi"));
+
+                    if (existePasta)
+                        PossuiPastaDelphi = true;
+
+                    if (PossuiPastaDelphi)
                     {
                         Dir = new DirectoryInfo(caminho + "\\Delphi\\ESPECIFICOCLIENTES");
                         Files = Dir.GetDirectories();
                     }
                     else
                     {
-                        var versao = Regex.Match(diretorioSubversion, @"\b\d\d");
-                        if (Convert.ToInt32(versao.Value) > 42)
-                        {
-                            Dir = new DirectoryInfo(caminho + "\\Delphi\\ESPECIFICOCLIENTES");
-                            Files = Dir.GetDirectories();
-                        }
-                        else
-                        {
-                            Dir = new DirectoryInfo(caminho + "\\ESPECIFICOCLIENTES");
-                            Files = Dir.GetDirectories();
-                        }
+                        Dir = new DirectoryInfo(caminho + "\\ESPECIFICOCLIENTES");
+                        Files = Dir.GetDirectories();
                     }
 
                     foreach (DirectoryInfo item in Files)
@@ -377,7 +393,7 @@ namespace Baiana20
             gerouErro = 0;
             try
             {
-                if (!ValidarDiretoriosSelecionados())
+                if (!ValidarDiretoriosSubversion())
                 {
                     MensagemProcesso("Diretório invalido detectado, por favor revise os caminhos selecionados!", Color.Red);
                     new ArgumentNullException();
@@ -394,21 +410,13 @@ namespace Baiana20
                     DirectoryInfo DirDll = new DirectoryInfo(PathSubversion.Text + "\\ESPECIFICOCLIENTES");
                     DirectoryInfo DirDproj;
 
-                    if (PathSubversion.Text.Contains("Corrente"))
+                    if (PossuiPastaDelphi)
                     {
                         DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
                     }
                     else
                     {
-                        var versao = Regex.Match(diretorioSubversion, @"\b\d\d");
-                        if (Convert.ToInt32(versao.Value) > 42)
-                        {
-                            DirDproj = new DirectoryInfo(PathSubversion.Text + "\\Delphi\\");
-                        }
-                        else
-                        {
-                            DirDproj = new DirectoryInfo(PathSubversion.Text + "\\");
-                        }
+                        DirDproj = new DirectoryInfo(PathSubversion.Text + "\\");
                     }
 
                     var caminhoDllOperadora = Directory.GetDirectories(DirDll.ToString()).ToList();
@@ -448,8 +456,8 @@ namespace Baiana20
                                     {
                                         gerouErro = aplicacoesSelecionadas.Count > 1 ? 2 : 1;
                                         pbProgresso.Color = aplicacoesSelecionadas.Count > 1 ? Brushes.Yellow : Brushes.Red;
-                                        
-                                        MensagemProcesso(String.Format("Não existe a pasta {0}, no caminho {1}\\ESPECIFICOCLIENTE" , operadoraSelecionada, diretorioSubversion), Color.Red);
+
+                                        MensagemProcesso(String.Format("Não existe a pasta {0}, no caminho {1}\\ESPECIFICOCLIENTES", operadoraSelecionada, diretorioSubversion), Color.Red);
                                         new ArgumentNullException();
                                     }
                                 }
@@ -487,9 +495,9 @@ namespace Baiana20
                                 caminhoTmp2 = String.Empty;
                                 pbProgresso.Color = cor;
                                 pbProgresso.PerformStep();
-                                DesabilitaHabilitarOpcoesAposCompilar(); 
+                                DesabilitaHabilitarOpcoesAposCompilar();
                             }
-                            
+
                         }
                         else
                         {
@@ -566,21 +574,13 @@ namespace Baiana20
                         {
                             if (line.Contains("<DCC_ExeOutput>..\\"))
                             {
-                                if (PathSubversion.Text.Contains("Corrente"))
+                                if (PossuiPastaDelphi)
                                 {
                                     line = String.Format(@"<DCC_ExeOutput>..\..\ESPECIFICOCLIENTES\{0}\DLLS\</DCC_ExeOutput>", operadora);
                                 }
                                 else
                                 {
-                                    var versao = Regex.Match(diretorioSubversion, @"\b\d\d");
-                                    if (Convert.ToInt32(versao.Value) > 42)
-                                    {
-                                        line = String.Format(@"<DCC_ExeOutput>..\..\ESPECIFICOCLIENTES\{0}\DLLS\</DCC_ExeOutput>", operadora);
-                                    }
-                                    else
-                                    {
-                                        line = String.Format(@"<DCC_ExeOutput>..\ESPECIFICOCLIENTES\{0}\DLLS\</DCC_ExeOutput>", operadora);
-                                    }
+                                    line = String.Format(@"<DCC_ExeOutput>..\ESPECIFICOCLIENTES\{0}\DLLS\</DCC_ExeOutput>", operadora);
                                 }
                             }
                             else if (line.Contains("$(DCC_UnitSearchPath"))
@@ -715,9 +715,9 @@ namespace Baiana20
 
             try
             {
-                if (!ValidarDiretoriosSelecionados())
+                if (!ValidarDiretoriosBsversion())
                 {
-                    MensagemProcesso("Diretório invalido detectado, por favor revise os caminhos selecionados!", Color.Red);
+                    MensagemProcesso("Diretório do BSVersion inválido por favor revise o caminho!", Color.Red);
                     new ArgumentNullException();
                 }
                 else
@@ -835,9 +835,11 @@ namespace Baiana20
                                 aplicacaoSubVersion.Substring(aplicacaoSubVersion.IndexOf("\\ESPECIFICOCLIENTES\\"));
                             var operadoNoBs =
                                 aplicacaoBsVersion.Substring(aplicacaoSubVersion.IndexOf("\\ESPECIFICOCLIENTES\\"));
+                            var bsFiltrado = Regex.Match(operadoNoBs, "ESPECIFICOCLIENTES\\\\.*");
                             try
                             {
-                                if (operadoraNoSub.EndsWith(operadoNoBs))
+
+                                if (operadoraNoSub.EndsWith(bsFiltrado.ToString()))
                                 {
                                     var caminhoDllSV = aplicacaoSubVersion + "\\DLLS";
                                     var arquivoOrigem = Path.Combine(caminhoDllSV, dllACopiar + ".dll");
@@ -913,6 +915,7 @@ namespace Baiana20
                     }
                     if (aplicacoesBsversion.Any())
                     {
+                      
                         foreach (var apBsversion in aplicacoesBsversion)
                         {
                             if (apBsversion.ToUpper().Contains(item.ToUpper()))
