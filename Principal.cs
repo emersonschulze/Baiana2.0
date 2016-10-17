@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace Baiana20
@@ -25,9 +21,8 @@ namespace Baiana20
         private SelecionaPasta selecionaPasta = new SelecionaPasta();
         private bool PossuiPastaDelphi = false;
         private bool VersaoSup42 = false;
-
         private List<string> eventoLog = new List<string>();
-
+        
         BarraDeProgresso pbProgresso = new BarraDeProgresso();
         public Baiana20()
         {
@@ -119,8 +114,7 @@ namespace Baiana20
         }
 
         #endregion
-
-
+        
         private void MensagemProcesso(string mensagem, Color corTexto)
         {
             LbMensagemAlerta.Text = mensagem;
@@ -915,7 +909,7 @@ namespace Baiana20
                     }
                     if (aplicacoesBsversion.Any())
                     {
-                      
+
                         foreach (var apBsversion in aplicacoesBsversion)
                         {
                             if (apBsversion.ToUpper().Contains(item.ToUpper()))
