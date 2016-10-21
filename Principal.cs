@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -437,13 +438,22 @@ namespace Baiana20
                                 {
                                     try
                                     {
+                                        var dcu = Path.Combine(diretorioFiltrado + "\\Obj");
+                                        if (Directory.Exists(dcu))
+                                        {
+                                            Directory.Delete(dcu,true);    
+                                        }
+
                                         var dirDllOperadora = caminhoDllOperadora.First(x => x.Contains(operadoraSelecionada));
                                         var contemPastaDLLL = Path.Combine(dirDllOperadora + "\\DLLS");
 
                                         if (!Directory.Exists(contemPastaDLLL))
                                             Directory.CreateDirectory(contemPastaDLLL);
 
+                                        Thread.Sleep(100);
                                         AlterarParaReleaseEAlterarOutputDproj(operadoraSelecionada, rbSelecionado, diretorioFiltrado);
+                                        
+                                        Thread.Sleep(100);
                                         AlterarBatEProcessar(rbSelecionado, diretorioFiltrado, operadoraSelecionada, aplicacoesSelecionadas.Count);
                                     }
                                     catch (Exception)
@@ -555,6 +565,8 @@ namespace Baiana20
             if (!File.Exists(caminhoTmpDproj))
                 File.Copy(origemDproj, destinoDprojBackup, false);
 
+            Thread.Sleep(600);
+
             using (StreamReader lendo = new StreamReader(origemDproj))
             {
                 using (StreamWriter gravando = new StreamWriter(destinoDprojTmp))
@@ -599,10 +611,14 @@ namespace Baiana20
                     lendo.Close();
                     gravando.Flush();
                     gravando.Close();
+                    Thread.Sleep(500);
 
                     File.Copy(destinoDprojTmp, origemDproj, true);
+                    Thread.Sleep(400);
+
                     File.Delete(destinoDprojTmp);
                     Directory.Delete(diretorioTmp);
+                    Thread.Sleep(400);
                 }
             }
 
@@ -650,8 +666,9 @@ namespace Baiana20
                     gravando.Close();
                 }
 
+                Thread.Sleep(300);
                 ProcessarBat(destinoTmp, rbSelecionado, operadora, quantAplicacoes, aplicacao);
-
+                
                 File.Delete(destinoTmp);
                 Directory.Delete(diretorioTmp);
             }
